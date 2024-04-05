@@ -105,10 +105,9 @@ class RedBlob(Blob):
 
     # If the red blob is active, it will try to chop 1 piece of wood
     def act(self, env: Environment) -> bool:
-        if self.__status != BlobStatus.SLEEPING:
-            if env.chopTree():
-                self.__choppedTree = True
-                return True
+        if self.__status != BlobStatus.SLEEPING and env.chopTree():
+            self.__choppedTree = True
+            return True
         return False
 
     def synchronise(self) -> None:
@@ -143,10 +142,9 @@ class BlueBlob(Blob):
 
     # If the blue blob is active, it will try to collect 1 piece of water
     def act(self, env: Environment) -> bool:
-        if self.__status != BlobStatus.SLEEPING:
-            if env.collectWater():
-                self.__collectedWater = True
-                return True
+        if self.__status != BlobStatus.SLEEPING and env.collectWater():
+            self.__collectedWater = True
+            return True
         return False
 
     def synchronise(self) -> None:

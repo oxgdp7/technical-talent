@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import Simulation from "./Simulation";
+import UserInput from "./UserInput";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [blobs, setBlobs] = useState({
+        redBlobs: 0,
+        blueBlobs: 0,
+        greenBlobs: 0,
+        orangeBlobs: 0,
+    });
+
+    const test = (newBlobs) => {
+        setBlobs(newBlobs);
+    };
+
+    return (
+        <div className="App">
+            <UserInput test={test} />
+            <Simulation blobs={blobs} />
+        </div>
+    );
 }
 
 export default App;
