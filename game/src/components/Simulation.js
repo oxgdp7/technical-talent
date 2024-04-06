@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import BlobList from "./BlobList";
-import RedBlob from "./blobs/RedBlob";
-import BlueBlob from "./blobs/BlueBlob";
-import GreenBlob from "./blobs/GreenBlob";
-import OrangeBlob from "./blobs/OrangeBlob";
-import Environment from "./Environment";
+import RedBlob from "../models/blobs/RedBlob";
+import BlueBlob from "../models/blobs/BlueBlob";
+import GreenBlob from "../models/blobs/GreenBlob";
+import OrangeBlob from "../models/blobs/OrangeBlob";
+import Environment from "../models/Environment";
 import EnvironmentDisplay from "./EnvironmentDisplay";
-import PurpleBlob from "./blobs/PurpleBlob";
-import YellowBlob from "./blobs/YellowBlob";
+import PurpleBlob from "../models/blobs/PurpleBlob";
+import YellowBlob from "../models/blobs/YellowBlob";
 
 function Simulation(props) {
     const [blobs, setBlobs] = useState([]);
@@ -15,8 +15,8 @@ function Simulation(props) {
     const [rerender, setRerender] = useState(false);
 
     useEffect(() => {
-        setEnv(new Environment(20, 5));
-    }, [props.blobs]);
+        setEnv(new Environment(props.env.trees, props.env.waterFlow));
+    }, [props.blobs, props.env]);
 
     useEffect(() => {
         let currentBlobs = [];
