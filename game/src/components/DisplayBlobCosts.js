@@ -14,13 +14,12 @@ function DisplayBlobCosts(props) {
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col-2">Blob color</th>
-                            <th scope="col-2">Cost</th>
+                            <th scope="col">Blob color</th>
+                            <th scope="col">Cost</th>
                         </tr>
                     </thead>
                     <tbody>{props.blobs.map((blob) => showBlob(blob))}</tbody>
                 </table>
-                <div className="col-8"></div>
             </div>
         </div>
     );

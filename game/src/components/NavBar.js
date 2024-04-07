@@ -9,8 +9,11 @@ function NavBar() {
             <Link to="/level2">
                 <button>Level 2</button>
             </Link>
+            <Link to="/help">
+                <button>Help</button>
+            </Link>
         </div>
     );
 }
 
-export default NavBar
+export default NavBar;
