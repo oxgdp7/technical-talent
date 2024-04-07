@@ -23,6 +23,9 @@ class PurpleBlob extends Blob {
         this.#activated = false;
     }
 
+    /* The purple blob wakes up each of its 'children' once and then goes
+     * to sleep */
+
     act() {
         let foundBlob = false;
         if (this.#totalRestarted < this.#numBlobs) {

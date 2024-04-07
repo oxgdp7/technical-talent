@@ -17,6 +17,8 @@ class BlueBlob extends Blob {
         this.#env = env;
     }
 
+    /* The blue blob collects 1 bucket of water if it can */
+
     act() {
         if (
             this.#status.name !== Status.Sleeping.name &&

@@ -6,13 +6,19 @@ class Blob {
         }
     }
 
+    // Performs its task, if possible at the time of acting
+
     act() {
         throw new Error("Act must be implemented");
     }
 
+    // Changes the blob status and prepares it for the next round
+
     synchronise() {
         throw new Error("Synchronise must be implemented");
     }
+
+    // Reactivates / wakes-up the blob
 
     restart() {
         throw new Error("Restart must be implemented");

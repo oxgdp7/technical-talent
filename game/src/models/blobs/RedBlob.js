@@ -17,6 +17,8 @@ class RedBlob extends Blob {
         this.#env = env;
     }
 
+    /* The red blob chops 1 tree if it can */
+
     act() {
         if (
             this.#status.name !== Status.Sleeping.name &&

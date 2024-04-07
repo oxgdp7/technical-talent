@@ -7,6 +7,10 @@ class Environment {
     #collectedWood;
     #collectedWater;
 
+    /* Creates an environment starting with
+     * trees -- number of trees
+     * water -- rate of flow of water */
+
     constructor(trees, water) {
         this.#trees = trees;
         this.#water = water;
@@ -24,9 +28,15 @@ class Environment {
         return true;
     }
 
+    /* Chops a tree without decreasing the number of trees in the environment so
+     * the blob has grown and is now chopping its own tree */
+
     chopRenewable() {
         this.#collectedWood++;
     }
+
+    /* If there are any trees at the start of the round, there will be seeds on
+     * the ground */
 
     collectSeed() {
         return this.#seeds;

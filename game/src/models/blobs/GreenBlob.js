@@ -19,6 +19,11 @@ class GreenBlob extends Blob {
         this.#env = env;
     }
 
+    /* The green blob has 2 actions:
+     * For the first action, it waits until it can collect a seed
+     * Then, it will plant and grow a tree (the tree is added at the end
+     * of the round it was planted) */
+
     act() {
         if (this.#status.name !== Status.Sleeping.name) {
             if (this.#collectedSeed) {

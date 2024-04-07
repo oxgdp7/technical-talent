@@ -21,6 +21,9 @@ class YellowBlob extends Blob {
         this.#activated = false;
     }
 
+    /* The yellow blob will wake up its 'child' blob #repetitions times and
+     * then go to sleep */
+
     act() {
         if (this.#completedRestarts >= this.#neededRestarts) {
             return false;

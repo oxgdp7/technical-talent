@@ -19,6 +19,10 @@ class OrangeBlob extends Blob {
         this.#env = env;
     }
 
+    /* The orange blob has 2 actions:
+     * For the first action, it waits until it can collect a seed
+     * Then, it will plant and then chop down a tree */
+
     act() {
         if (this.#status.name !== Status.Sleeping.name) {
             if (this.#collectedSeed) {
