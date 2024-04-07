@@ -1,10 +1,10 @@
 import LevelCreator from "../components/LevelCreator";
 import BlobCostCreator from "../utils/BlobCostCreator";
 
-function Level1() {
+function Level2() {
     const env = {
-        trees: 20,
-        waterFlow: 5,
+        trees: 5,
+        waterFlow: 10,
     };
 
     const target = {
@@ -13,12 +13,12 @@ function Level1() {
     };
 
     const costs = {
-        redBlob: new BlobCostCreator(((_) => 1), "1"),
-        blueBlob: new BlobCostCreator(((_) => 1), "1"),
+        redBlob: new BlobCostCreator(((_) => 5), "5"),
+        blueBlob: new BlobCostCreator(((_) => 10), "10"),
         greenBlob: new BlobCostCreator(((_) => 2), "2"),
-        orangeBlob: new BlobCostCreator(((_) => 5), "5"),
-        purpleBlob: new BlobCostCreator(((x) => 2*x), "2 * number of blobs repeated"),
-        yellowBlob: new BlobCostCreator(((x) => 3*x), "3 * number of repetitions"),
+        orangeBlob: new BlobCostCreator(((_) => 10), "10"),
+        purpleBlob: new BlobCostCreator(((x) => 3*x), "3 * number of blobs repeated"),
+        yellowBlob: new BlobCostCreator(((x) => 2*x), "2 * number of repetitions"),
     };
 
     return (
@@ -28,4 +28,4 @@ function Level1() {
     );
 }
 
-export default Level1;
+export default Level2;

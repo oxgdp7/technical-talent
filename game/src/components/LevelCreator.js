@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DisplayLevelDetails from "./DisplayLevelDetails";
 import Simulation from "./Simulation";
 import UserInput from "./UserInput";
 
@@ -16,6 +17,7 @@ function LevelCreator(props) {
 
     return (
         <div className="container">
+            <DisplayLevelDetails target={props.target} env={props.env} costs={props.costs} />
             <UserInput test={test} />
             <Simulation blobs={blobs} env={props.env} />
         </div>
