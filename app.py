@@ -5,23 +5,15 @@ from flask import (
     session,
     redirect,
     url_for,
-    request,
-    jsonify,
-    abort,
 )
-from flask_sqlalchemy import SQLAlchemy, event
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import validates
-
-from collections import defaultdict
+from sqlalchemy import event
 from datetime import datetime, timezone
-from functools import wraps
-
 import os
-
 from dotenv import load_dotenv
+
+from model import db, User, LevelScore, Recruiter
 
 load_dotenv()
 
@@ -30,39 +22,12 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SECURE=True,
-    SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URI"),
+    SQLALCHEMY_DATABASE_URI="sqlite:///table.db",
 )
-db = SQLAlchemy(app)
+
+db.init_app(app)
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-
-
-class User(db.Model):
-    __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
-    google_id = db.Column(db.String(256), unique=True, nullable=False, index=True)
-    name = db.Column(db.String(256), nullable=False)
-    email = db.Column(db.String(256), unique=True, nullable=False)
-    last_played = db.Column(db.DateTime)
-    has_been_emailed = db.Column(db.Boolean, default=False)
-    total_score = db.Column(db.Integer, default=0)
-    scores = db.relationship("LevelScore", backref="user", lazy=True)
-
-
-class LevelScore(db.Model):
-    __tablename__ = "level_scores"
-    id = db.Column(db.Integer, primary_key=True)
-    level_id = db.Column(db.Integer, nullable=False)
-    score = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
-    @validates("score")
-    def validate_score(self, key, value):
-        if not isinstance(value, int) or value < 0:
-            raise AssertionError(f"{key} must be a non-negative integer")
-        return value
-
 
 # maintain total_score invariant
 def update_user_total_score(mapper, connection, target):
@@ -208,4 +173,11 @@ def internal(e):
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
+        default_user = Recruiter(username = "username", 
+            password = "scrypt:32768:8:1$OjTG32paY7lO2En1$3395ccb114c3df243a57aacdf169572c427e2310a76e6b2fed5bc41b854586344361aad24e20a8655cfe930aeb9172370b79fb0ab058691537177564df8fe743")
+        
+        db.session.add(default_user)
+        db.session.commit()
+
     app.run(host="0.0.0.0", port=5000, ssl_context="adhoc")
