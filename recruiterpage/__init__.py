@@ -28,4 +28,7 @@ def create_app(test_config=None):
     app.register_blueprint(scores.bp)
     app.add_url_rule("/", endpoint="index")    
 
+    from . import vis
+    app.register_blueprint(vis.bp)
+
     return app

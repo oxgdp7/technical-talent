@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1><a href="{{ url_for('scores.index') }}">Scores</a></h1>
+  <h1><a href="{{ url_for('vis.visual') }}">{% block title %}Visualisations{% endblock %}</a></h1>
+{% endblock %}
+
+{% block content %}  
+
+    <h3> Visualisations</h3>
+
+{% endblock %}
