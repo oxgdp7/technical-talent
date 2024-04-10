@@ -9,6 +9,8 @@ Which initalises all the databases. Then, run:
 
 ### `flask --app recruiterpage run --debug -p 8000`
 
+The username is "username" and password is "password"
+
 Run `test_data.py` to add dummy data to the DB for the recruiter webpage.
 
 You may need to install packages by running
