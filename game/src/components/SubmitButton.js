@@ -4,20 +4,13 @@ function SubmitButton(props) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                level: props.level,
                 google_id: 1,
                 user_email: props.email,
                 user_name: props.name,
-                blobs: props.blobs
-                //user_score: 200,
+                blobs: props.blobs,
             }),
-        })
-            .then((res) => {
-                console.log(res);
-                res.json();
-            })
-            .then((data) => {
-                console.log(data);
-            });
+        });
     };
 
     return (
@@ -30,7 +23,7 @@ function SubmitButton(props) {
                 submit
             </button>
         </div>
-    )
+    );
 }
 
-export default SubmitButton
+export default SubmitButton;

@@ -3,14 +3,16 @@ import Status from "./Status";
 
 class RedBlob extends Blob {
     #name;
+    #number;
     #choppedTree;
     #status;
     #activated;
     #env;
 
-    constructor(name, env) {
+    constructor(number, env) {
         super();
-        this.#name = "Red" + name;
+        this.#name = "Red" + number;
+        this.#number = number;
         this.#choppedTree = false;
         this.#status = new Status("Active");
         this.#activated = false;
@@ -63,8 +65,9 @@ class RedBlob extends Blob {
 
     toJSON() {
         return {
-            name: this.#name
-        }
+            color: "red",
+            number: this.#number,
+        };
     }
 }
 

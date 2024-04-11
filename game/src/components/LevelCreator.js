@@ -1,5 +1,8 @@
 import { useState } from "react";
 import RedBlob from "../models/blobs/RedBlob";
+import BlueBlob from "../models/blobs/BlueBlob";
+import GreenBlob from "../models/blobs/GreenBlob";
+import OrangeBlob from "../models/blobs/OrangeBlob";
 import Environment from "../models/Environment";
 import DisplayLevelDetails from "./DisplayLevelDetails";
 import Simulation from "./Simulation";
@@ -16,11 +19,20 @@ function LevelCreator(props) {
 
     // TODO: Fix all of this
     // Currently just set up to test sending data to the server
-    const env = new Environment()
+    const env = new Environment();
     const createBlobs = () => {
         let currentBlobs = [];
         for (let i = 0; i < blobs.redBlobs; i++) {
             currentBlobs.push(new RedBlob(i, env));
+        }
+        for (let i = 0; i < blobs.blueBlobs; i++) {
+            currentBlobs.push(new BlueBlob(i, env));
+        }
+        for (let i = 0; i < blobs.greenBlobs; i++) {
+            currentBlobs.push(new GreenBlob(i, env));
+        }
+        for (let i = 0; i < blobs.orangeBlobs; i++) {
+            currentBlobs.push(new OrangeBlob(i, env));
         }
         return currentBlobs;
     };
@@ -39,6 +51,7 @@ function LevelCreator(props) {
             <UserInput test={test} />
             <Simulation blobs={blobs} env={props.env} />
             <SubmitButton
+                level={props.level}
                 email={props.email}
                 name={props.name}
                 blobs={createBlobs()}

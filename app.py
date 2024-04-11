@@ -1,5 +1,4 @@
 from authlib.integrations.flask_client import OAuth
-from blob import RedBlob, Simulation
 from flask import (
     Flask,
     render_template,
@@ -16,7 +15,7 @@ import os
 from dotenv import load_dotenv
 
 from model import db, User, LevelScore, Recruiter
-from blob import *
+from logic.levels import levelSelector
 
 
 load_dotenv()
@@ -161,19 +160,8 @@ def logout():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    print("Test")
-    blobs = []
-    print(request.json["blobs"])
-    for blob in request.json["blobs"]:
-        blobs.append(RedBlob(1))
-    simulation = Simulation(
-        blobs=blobs,
-        woodToCollect=3,
-        waterToCollect=3,
-        trees=1,
-        rateOfWater=1,
-    )
-    score = simulation.result()[1] # Not how score should work, TODO: Fix
+    score = levelSelector(request.json["level"], request.json["blobs"])
+    # should not just update total score, also should make sure score is non negative
     user = create_or_update_user(request.json["google_id"], request.json["user_email"], request.json["user_name"], score)
     return {"completed": True}
 

@@ -31,6 +31,10 @@ class Blob {
     name() {
         throw new Error("Name must be implemented");
     }
+
+    toJSON() {
+        throw new Error("to JSON must be implemented")
+    }
 }
 
 export default Blob;

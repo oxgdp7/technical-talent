@@ -3,14 +3,16 @@ import Status from "./Status";
 
 class BlueBlob extends Blob {
     #name;
+    #number;
     #collectedWater;
     #status;
     #activated;
     #env;
 
-    constructor(name, env) {
+    constructor(number, env) {
         super();
-        this.#name = "Blue" + name;
+        this.#name = "Blue" + number;
+        this.#number = number;
         this.#collectedWater = false;
         this.#status = new Status("Active");
         this.#activated = false;
@@ -59,6 +61,13 @@ class BlueBlob extends Blob {
 
     name() {
         return this.#name;
+    }
+
+    toJSON() {
+        return {
+            color: "blue",
+            number: this.#number,
+        };
     }
 }
 

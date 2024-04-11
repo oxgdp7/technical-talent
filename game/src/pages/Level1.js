@@ -14,19 +14,36 @@ function Level1() {
     };
 
     const costs = {
-        redBlob: new BlobCostCreator(((_) => 1), "1"),
-        blueBlob: new BlobCostCreator(((_) => 1), "1"),
-        greenBlob: new BlobCostCreator(((_) => 2), "2"),
-        orangeBlob: new BlobCostCreator(((_) => 5), "5"),
-        purpleBlob: new BlobCostCreator(((x) => 2*x), "2 * number of blobs repeated"),
-        yellowBlob: new BlobCostCreator(((x) => 3*x), "3 * number of repetitions"),
+        redBlob: new BlobCostCreator((_) => 1, "1"),
+        blueBlob: new BlobCostCreator((_) => 1, "1"),
+        greenBlob: new BlobCostCreator((_) => 2, "2"),
+        orangeBlob: new BlobCostCreator((_) => 5, "5"),
+        purpleBlob: new BlobCostCreator(
+            (x) => 2 * x,
+            "2 * number of blobs repeated",
+        ),
+        yellowBlob: new BlobCostCreator(
+            (x) => 3 * x,
+            "3 * number of repetitions",
+        ),
     };
+
+    // Enough to buy 50 orange blobs, 20 blue blobs
+    const budget = 300;
 
     const { state } = useLocation();
 
     return (
         <div className="container">
-            <LevelCreator env={env} target={target} costs={costs} email={state.email} name={state.name}/>
+            <LevelCreator
+                level={1}
+                env={env}
+                target={target}
+                costs={costs}
+                budget={budget}
+                email={state.email}
+                name={state.name}
+            />
         </div>
     );
 }
