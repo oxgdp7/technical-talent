@@ -60,6 +60,12 @@ class RedBlob extends Blob {
     name() {
         return this.#name;
     }
+
+    toJSON() {
+        return {
+            name: this.#name
+        }
+    }
 }
 
 export default RedBlob;

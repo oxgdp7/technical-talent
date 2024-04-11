@@ -1,10 +1,12 @@
 from authlib.integrations.flask_client import OAuth
+from blob import RedBlob, Simulation
 from flask import (
     Flask,
     render_template,
     session,
     redirect,
     url_for,
+    request,
 )
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -14,6 +16,8 @@ import os
 from dotenv import load_dotenv
 
 from model import db, User, LevelScore, Recruiter
+from blob import *
+
 
 load_dotenv()
 
@@ -85,7 +89,7 @@ def get_users_by_level_score(level, lower_bound=None, upper_bound=None):
     return query.all()
 
 
-def create_or_update_user(google_id, user_email, user_name):
+def create_or_update_user(google_id, user_email, user_name, user_score):
     if user_name is None:
         user_name = ""
     user = get_user(google_id)
@@ -95,6 +99,7 @@ def create_or_update_user(google_id, user_email, user_name):
             email=user_email,
             name=user_name,
             last_played=datetime.now(timezone.utc),
+            total_score=user_score,
         )
         db.session.add(user)
     else:
@@ -152,6 +157,25 @@ def authorize():
 def logout():
     session.pop("user_id", None)
     return redirect("/")
+
+
+@app.route("/submit", methods=["POST"])
+def submit():
+    print("Test")
+    blobs = []
+    print(request.json["blobs"])
+    for blob in request.json["blobs"]:
+        blobs.append(RedBlob(1))
+    simulation = Simulation(
+        blobs=blobs,
+        woodToCollect=3,
+        waterToCollect=3,
+        trees=1,
+        rateOfWater=1,
+    )
+    score = simulation.result()[1] # Not how score should work, TODO: Fix
+    user = create_or_update_user(request.json["google_id"], request.json["user_email"], request.json["user_name"], score)
+    return {"completed": True}
 
 
 @app.errorhandler(404)

@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import LevelCreator from "../components/LevelCreator";
 import BlobCostCreator from "../utils/BlobCostCreator";
 
@@ -21,9 +22,11 @@ function Level1() {
         yellowBlob: new BlobCostCreator(((x) => 3*x), "3 * number of repetitions"),
     };
 
+    const { state } = useLocation();
+
     return (
         <div className="container">
-            <LevelCreator env={env} target={target} costs={costs} />
+            <LevelCreator env={env} target={target} costs={costs} email={state.email} name={state.name}/>
         </div>
     );
 }
