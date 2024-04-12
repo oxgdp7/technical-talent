@@ -2,9 +2,12 @@ from logic.levelCreator import calculateScore
 
 
 def levelSelector(level: int, blobDetails: list) -> int:
+    score = 0
     if level == 1:
-        return level1(blobDetails=blobDetails)
-    raise Exception("Invalid level")
+        score = level1(blobDetails=blobDetails)
+    else:
+        raise Exception("Invalid level")
+    return max(score, 0)
 
 
 def level1(blobDetails: list) -> int:
@@ -13,6 +16,8 @@ def level1(blobDetails: list) -> int:
         "blue": 1,
         "green": 2,
         "orange": 5,
+        "purple": lambda x: 2 * x,
+        "yellow": lambda y: 3 * y,
     }
     return calculateScore(
         blobDetails=blobDetails,

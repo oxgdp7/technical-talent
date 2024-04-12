@@ -8,6 +8,8 @@ import DisplayLevelDetails from "./DisplayLevelDetails";
 import Simulation from "./Simulation";
 import SubmitButton from "./SubmitButton";
 import UserInput from "./UserInput";
+import PurpleBlob from "../models/blobs/PurpleBlob";
+import YellowBlob from "../models/blobs/YellowBlob";
 
 function LevelCreator(props) {
     const [blobs, setBlobs] = useState({
@@ -22,18 +24,30 @@ function LevelCreator(props) {
     const env = new Environment();
     const createBlobs = () => {
         let currentBlobs = [];
+        let blobsToRepeat = [];
         for (let i = 0; i < blobs.redBlobs; i++) {
-            currentBlobs.push(new RedBlob(i, env));
+            let blob = new RedBlob(i, env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
         }
         for (let i = 0; i < blobs.blueBlobs; i++) {
-            currentBlobs.push(new BlueBlob(i, env));
+            let blob = new BlueBlob(i, env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
         }
         for (let i = 0; i < blobs.greenBlobs; i++) {
-            currentBlobs.push(new GreenBlob(i, env));
+            let blob = new GreenBlob(i, env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
         }
         for (let i = 0; i < blobs.orangeBlobs; i++) {
-            currentBlobs.push(new OrangeBlob(i, env));
+            let blob = new OrangeBlob(i, env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
         }
+        let purple = new PurpleBlob(0, blobsToRepeat);
+        let yellow = new YellowBlob(0, purple, 10);
+        currentBlobs.push(purple, yellow);
         return currentBlobs;
     };
 

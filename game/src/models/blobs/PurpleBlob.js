@@ -3,6 +3,7 @@ import Status from "./Status";
 
 class PurpleBlob extends Blob {
     #name;
+    #number;
     #blobs;
     #numBlobs;
     #blobsRestarted;
@@ -11,9 +12,10 @@ class PurpleBlob extends Blob {
     #status;
     #activated;
 
-    constructor(name, blobs) {
+    constructor(number, blobs) {
         super();
-        this.#name = "Purple" + name;
+        this.#name = "purple" + number;
+        this.#number = number;
         this.#blobs = blobs;
         this.#numBlobs = this.#blobs.length;
         this.#blobsRestarted = new Array(this.#numBlobs).fill(false);
@@ -89,6 +91,14 @@ class PurpleBlob extends Blob {
 
     name() {
         return this.#name;
+    }
+
+    toJSON() {
+        return {
+            color: "purple",
+            number: this.#number.toString(),
+            children: this.#blobs.map((child) => child.name()),
+        };
     }
 }
 

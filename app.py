@@ -161,7 +161,7 @@ def logout():
 @app.route("/submit", methods=["POST"])
 def submit():
     score = levelSelector(request.json["level"], request.json["blobs"])
-    # should not just update total score, also should make sure score is non negative
+    # should not just update total score
     user = create_or_update_user(request.json["google_id"], request.json["user_email"], request.json["user_name"], score)
     return {"completed": True}
 

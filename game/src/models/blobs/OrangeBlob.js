@@ -12,7 +12,7 @@ class OrangeBlob extends Blob {
 
     constructor(number, env) {
         super();
-        this.#name = "Orange" + number;
+        this.#name = "orange" + number;
         this.#number = number;
         this.#collectedSeed = false;
         this.#choppedTree = false;
@@ -78,7 +78,7 @@ class OrangeBlob extends Blob {
     toJSON() {
         return {
             color: "orange",
-            number: this.#number,
+            number: this.#number.toString(),
         };
     }
 }

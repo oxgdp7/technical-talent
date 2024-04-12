@@ -11,7 +11,7 @@ class RedBlob extends Blob {
 
     constructor(number, env) {
         super();
-        this.#name = "Red" + number;
+        this.#name = "red" + number;
         this.#number = number;
         this.#choppedTree = false;
         this.#status = new Status("Active");
@@ -66,7 +66,7 @@ class RedBlob extends Blob {
     toJSON() {
         return {
             color: "red",
-            number: this.#number,
+            number: this.#number.toString(),
         };
     }
 }

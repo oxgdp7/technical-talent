@@ -11,7 +11,7 @@ class BlueBlob extends Blob {
 
     constructor(number, env) {
         super();
-        this.#name = "Blue" + number;
+        this.#name = "blue" + number;
         this.#number = number;
         this.#collectedWater = false;
         this.#status = new Status("Active");
@@ -66,7 +66,7 @@ class BlueBlob extends Blob {
     toJSON() {
         return {
             color: "blue",
-            number: this.#number,
+            number: this.#number.toString(),
         };
     }
 }

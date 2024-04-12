@@ -19,25 +19,50 @@ def calculateScore(
         rateOfWater=rateOfWater,
     )
     res = simulation.result()
+    print("Results")
+    print(res[0])
+    print(res[1])
+    print(simulation.resources())
     if not res[0]:
         return 0
     return budget - res[1]
 
 
 def createBlobs(blobDetails: list, costs: dict) -> list[Blob]:
-    blobs = []
+    # Mapping from blob name to a class for that blob
+    blobs = {}
+    # Create the blobs
     for blob in blobDetails:
-        blobs.append(createBlob(blob=blob, costs=costs))
-    return blobs
+        key, value = createBlob(blob=blob, costs=costs)
+        blobs[key] = value
+    # Add children
+    for blob in blobDetails:
+        if blob["color"] == "purple":
+            children = []
+            for child in blob["children"]:
+                children.append(blobs[child])
+            blobs["purple" + blob["number"]].addBlobs(children)
+        if blob["color"] == "yellow":
+            blobs["yellow" + blob["number"]].addBlob(blobs[blob["child"]])
+    return list(blobs.values())
 
 
-def createBlob(blob: dict, costs: dict) -> Blob:
+def createBlob(blob: dict, costs: dict) -> tuple[str, Blob]:
+    print(blob)
+    print(type(blob))
     if blob["color"] == "red":
-        return RedBlob(costs["red"])
+        return ("red" + blob["number"], RedBlob(costs["red"]))
     if blob["color"] == "blue":
-        return BlueBlob(costs["blue"])
+        return ("blue" + blob["number"], BlueBlob(costs["blue"]))
     if blob["color"] == "green":
-        return GreenBlob(costs["green"])
+        return ("green" + blob["number"], GreenBlob(costs["green"]))
     if blob["color"] == "orange":
-        return OrangeBlob(costs["orange"])
+        return ("orange" + blob["number"], OrangeBlob(costs["orange"]))
+    if blob["color"] == "purple":
+        return ("purple" + blob["number"], PurpleBlob(costs["purple"], []))
+    if blob["color"] == "yellow":
+        return (
+            "yellow" + blob["number"],
+            YellowBlob(costs["yellow"], blob["repetitions"]),
+        )
     raise Exception("Wrong blob color")

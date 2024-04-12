@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from enum import Enum
+from typing import Optional
 
 
 class Environment:
@@ -271,10 +272,15 @@ class PurpleBlob(Blob):
         self.__numBlobs = len(self.__blobs)
         self.__blobRestarted = [False] * self.__numBlobs
         self.__totalRestarted = 0
-        self.__cost = costFunc(self.__numBlobs)
+        self.__costFunc = costFunc
         self.__restartedBlob = False
         self.__status = BlobStatus.ACTIVE
         self.__activated = False
+
+    def addBlobs(self, blobs: list[Blob]) -> None:
+        self.__blobs = self.__blobs + blobs
+        self.__numBlobs = len(self.__blobs)
+        self.__blobRestarted = [False] * self.__numBlobs
 
     # The purple blob will check if any of its child blobs are asleep and wake
     # them up if necessary
@@ -320,7 +326,7 @@ class PurpleBlob(Blob):
         return self.__status
 
     def cost(self) -> int:
-        return self.__cost
+        return self.__costFunc(self.__numBlobs)
 
 
 # The yellow blob waits until its child goes to sleep and then wakes it up
@@ -328,7 +334,10 @@ class PurpleBlob(Blob):
 # #repetitions times
 class YellowBlob(Blob):
     def __init__(
-        self, costFunc: Callable[[int], int], blob: Blob, repetitions: int
+        self,
+        costFunc: Callable[[int], int],
+        repetitions: int,
+        blob: Optional[Blob] = None,
     ) -> None:
         self.__blob = blob
         self.__restartsNeeded = repetitions
@@ -338,8 +347,13 @@ class YellowBlob(Blob):
         self.__status = BlobStatus.ACTIVE
         self.__activated = False
 
+    def addBlob(self, blob: Blob) -> None:
+        self.__blob = blob
+
     # The yellow blob will restart its blob x times
     def act(self, env: Environment) -> bool:
+        if self.__blob is None:
+            raise Exception("Yellow blob must have child blob")
         if self.__completedRestarts < self.__restartsNeeded:
             if self.__blob.status() == BlobStatus.SLEEPING:
                 self.__blob.restart()
@@ -435,7 +449,7 @@ def example() -> None:
     purple = PurpleBlob(f, [red, green, blue1])
     blue2 = BlueBlob(1)
     orange = OrangeBlob(1)
-    yellow = YellowBlob(f, orange, 1)
+    yellow = YellowBlob(f, 1, orange)
     blobs = [purple, red, green, blue1, blue2, yellow, orange]
     simulation = Simulation(
         blobs=blobs,
@@ -457,7 +471,7 @@ def example2() -> None:
     green2 = GreenBlob(1)
     purple1 = PurpleBlob(f, [red1, red2, green1, green2])
     purple2 = PurpleBlob(f, [purple1, blue1])
-    yellow1 = YellowBlob(f, purple2, 10)
+    yellow1 = YellowBlob(f, 10, purple1)
     blobs = [red1, red2, green1, green2, blue1, purple1, purple2, yellow1]
     simulation = Simulation(
         blobs=blobs,

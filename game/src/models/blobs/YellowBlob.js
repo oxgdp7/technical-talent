@@ -3,6 +3,7 @@ import Status from "./Status";
 
 class YellowBlob extends Blob {
     #name;
+    #number;
     #blob;
     #neededRestarts;
     #completedRestarts;
@@ -10,9 +11,10 @@ class YellowBlob extends Blob {
     #status;
     #activated;
 
-    constructor(name, blob, repetitions) {
+    constructor(number, blob, repetitions) {
         super();
-        this.#name = "Yellow" + name;
+        this.#name = "yellow" + number;
+        this.#number = number;
         this.#blob = blob;
         this.#neededRestarts = repetitions;
         this.#completedRestarts = 0;
@@ -73,6 +75,15 @@ class YellowBlob extends Blob {
 
     name() {
         return this.#name;
+    }
+
+    toJSON() {
+        return {
+            color: "yellow",
+            number: this.#number.toString(),
+            child: this.#blob.name(),
+            repetitions: this.#neededRestarts,
+        };
     }
 }
 
