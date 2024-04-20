@@ -21,12 +21,7 @@ function LevelCreator(props) {
             />
             <UserInput load={load} env={props.env} />
             <Simulation blobs={blobs} env={props.env} />
-            <SubmitButton
-                level={props.level}
-                email={props.email}
-                name={props.name}
-                blobs={blobs}
-            />
+            <SubmitButton level={props.level} blobs={blobs} />
         </div>
     );
 }
