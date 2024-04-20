@@ -1,23 +1,28 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// Define paths for background and sprite images
+const backgroundImage = '/background.jpg';
+const spriteImages = ['/sprite1.png', '/sprite2.png', '/sprite3.png']; // Add more sprite images for animation
+
 function App() {
+  const [spriteIndex, setSpriteIndex] = useState(0);
+
+  useEffect(() => {
+    // Function to update sprite index at regular intervals
+    const interval = setInterval(() => {
+      setSpriteIndex((prevIndex) => (prevIndex + 1) % spriteImages.length);
+    }, 500); // Adjust the interval for animation speed
+
+    return () => clearInterval(interval); // Cleanup function to clear interval
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="background-container">
+        <img src={backgroundImage} alt="Background" className="background-image" />
+        <img src={spriteImages[spriteIndex]} alt="Sprite" className="sprite-image" />
+      </div>
     </div>
   );
 }
