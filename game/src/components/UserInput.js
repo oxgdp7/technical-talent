@@ -1,4 +1,12 @@
 import { useState } from "react";
+import RedBlob from "../models/blobs/RedBlob";
+import BlueBlob from "../models/blobs/BlueBlob";
+import GreenBlob from "../models/blobs/GreenBlob";
+import OrangeBlob from "../models/blobs/OrangeBlob";
+import PurpleBlob from "../models/blobs/PurpleBlob";
+import YellowBlob from "../models/blobs/YellowBlob";
+
+// TODO: Create better user input system
 
 function UserInput(props) {
     const [redBlobs, setRedBlobs] = useState(0);
@@ -7,15 +15,39 @@ function UserInput(props) {
     const [orangeBlobs, setOrangeBlobs] = useState(0);
     const [negativeValueError, setNegativeValueError] = useState(false);
 
-    const testButtonPressed = () => {
+    const loadButtonPressed = () => {
         if (checkAllPositive) {
-            props.test({
-                redBlobs: redBlobs,
-                blueBlobs: blueBlobs,
-                greenBlobs: greenBlobs,
-                orangeBlobs: orangeBlobs,
-            });
+            props.load(createBlobs());
         }
+    };
+
+    const createBlobs = () => {
+        let currentBlobs = [];
+        let blobsToRepeat = [];
+        for (let i = 0; i < redBlobs; i++) {
+            let blob = new RedBlob(i, props.env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
+        }
+        for (let i = 0; i < blueBlobs; i++) {
+            let blob = new BlueBlob(i, props.env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
+        }
+        for (let i = 0; i < greenBlobs; i++) {
+            let blob = new GreenBlob(i, props.env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
+        }
+        for (let i = 0; i < orangeBlobs; i++) {
+            let blob = new OrangeBlob(i, props.env);
+            currentBlobs.push(blob);
+            blobsToRepeat.push(blob);
+        }
+        let purple = new PurpleBlob(0, blobsToRepeat);
+        let yellow = new YellowBlob(0, purple, 10);
+        currentBlobs.push(purple, yellow);
+        return currentBlobs;
     };
 
     const checkAllPositive = () => {
@@ -78,9 +110,9 @@ function UserInput(props) {
                 <button
                     type="button"
                     className="btn btn-dark"
-                    onClick={testButtonPressed}
+                    onClick={loadButtonPressed}
                 >
-                    Test
+                    Load blobs
                 </button>
             </div>
             {negativeValueError ? <h1>NO NEGATIVES</h1> : null}

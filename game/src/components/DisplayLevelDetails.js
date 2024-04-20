@@ -1,6 +1,6 @@
 import DisplayBlobCosts from "./DisplayBlobCosts";
 
-function DisplayTargets(props) {
+function DisplayLevelDetails(props) {
     const redBlob = {
         color: "Red",
         cost: props.costs.redBlob,
@@ -39,7 +39,7 @@ function DisplayTargets(props) {
             <p>
                 You need to get {props.target.wood} wood and{" "}
                 {props.target.water} water. At the start, there are{" "}
-                {props.env.trees} trees and {props.env.waterFlow} units of water
+                {props.env.trees()} trees and {props.env.waterFlow()} units of water
                 flow every round. The prices of the blobs are as listed below:
             </p>
             <DisplayBlobCosts blobs={blobs} />
@@ -47,4 +47,4 @@ function DisplayTargets(props) {
     );
 }
 
-export default DisplayTargets;
+export default DisplayLevelDetails;

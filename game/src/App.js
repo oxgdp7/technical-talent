@@ -5,7 +5,6 @@ import Help from "./pages/Help.js";
 import Level1 from "./pages/Level1.js";
 import Level2 from "./pages/Level2.js";
 import Layout from "./Layout";
-import { useState } from "react";
 
 function App() {
     return (

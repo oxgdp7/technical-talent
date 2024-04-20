@@ -19,10 +19,6 @@ def calculateScore(
         rateOfWater=rateOfWater,
     )
     res = simulation.result()
-    print("Results")
-    print(res[0])
-    print(res[1])
-    print(simulation.resources())
     if not res[0]:
         return 0
     return budget - res[1]
@@ -48,8 +44,6 @@ def createBlobs(blobDetails: list, costs: dict) -> list[Blob]:
 
 
 def createBlob(blob: dict, costs: dict) -> tuple[str, Blob]:
-    print(blob)
-    print(type(blob))
     if blob["color"] == "red":
         return ("red" + blob["number"], RedBlob(costs["red"]))
     if blob["color"] == "blue":

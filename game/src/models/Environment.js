@@ -6,6 +6,7 @@ class Environment {
     #waterLeft;
     #collectedWood;
     #collectedWater;
+    #startingTrees;
 
     /* Creates an environment starting with
      * trees -- number of trees
@@ -13,6 +14,7 @@ class Environment {
 
     constructor(trees, water) {
         this.#trees = trees;
+        this.#startingTrees = trees;
         this.#water = water;
         this.#seeds = this.#trees > 0;
         this.#treesToPlant = 0;
@@ -79,6 +81,15 @@ class Environment {
 
     waterCollected() {
         return this.#collectedWater;
+    }
+
+    reset() {
+        this.#trees = this.#startingTrees;
+        this.#seeds = false;
+        this.#treesToPlant = 0;
+        this.waterLeft = this.#water;
+        this.#collectedWood = 0;
+        this.#collectedWater = 0;
     }
 }
 

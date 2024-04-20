@@ -1,12 +1,10 @@
 import { useLocation } from "react-router-dom";
 import LevelCreator from "../components/LevelCreator";
 import BlobCostCreator from "../utils/BlobCostCreator";
+import Environment from "../models/Environment";
 
 function Level1() {
-    const env = {
-        trees: 20,
-        waterFlow: 5,
-    };
+    const env = new Environment(20, 5);
 
     const target = {
         wood: 50,
