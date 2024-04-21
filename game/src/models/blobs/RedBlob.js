@@ -4,6 +4,7 @@ import Status from "./Status";
 class RedBlob extends Blob {
     #name;
     #number;
+    #parent;
     #choppedTree;
     #status;
     #activated;
@@ -13,24 +14,36 @@ class RedBlob extends Blob {
         super();
         this.#name = "red" + number;
         this.#number = number;
+        this.#parent = null;
         this.#choppedTree = false;
         this.#status = new Status("Active");
         this.#activated = false;
         this.#env = env;
     }
 
+    addParent(parent) {
+        this.#parent = parent;
+    }
+
     /* The red blob chops 1 tree if it can */
 
     act() {
-        if (
-            this.#status.name !== Status.Sleeping.name &&
-            this.#env.chopTree()
-        ) {
+        return {
+            color: "red",
+            number: this.#number,
+            status: this.#resolveAction(),
+            parent: this.#parent ? this.#parent.name() : null,
+        };
+    }
+
+    #resolveAction() {
+        if (this.#status.name === Status.Sleeping.name) return "Sleeping";
+        if (this.#env.chopTree()) {
             console.log(this.#name + ": Chop 1 tree");
             this.#choppedTree = true;
-            return true;
+            return "Active";
         }
-        return false;
+        return "Waiting";
     }
 
     synchronise() {

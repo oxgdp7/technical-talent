@@ -1,5 +1,5 @@
 import LevelCreator from "../components/LevelCreator";
-import BlobCostCreator from "../utils/BlobCostCreator";
+import BlobCostCreator from "../models/BlobCostCreator";
 import Environment from "../models/Environment";
 
 function Level1() {

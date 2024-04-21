@@ -4,6 +4,7 @@ import Status from "./Status";
 class BlueBlob extends Blob {
     #name;
     #number;
+    #parent;
     #collectedWater;
     #status;
     #activated;
@@ -13,24 +14,36 @@ class BlueBlob extends Blob {
         super();
         this.#name = "blue" + number;
         this.#number = number;
+        this.#parent = null;
         this.#collectedWater = false;
         this.#status = new Status("Active");
         this.#activated = false;
         this.#env = env;
     }
 
+    addParent(parent) {
+        this.#parent = parent;
+    }
+
     /* The blue blob collects 1 bucket of water if it can */
 
     act() {
-        if (
-            this.#status.name !== Status.Sleeping.name &&
-            this.#env.collectWater()
-        ) {
+        return {
+            color: "blue",
+            number: this.#number,
+            status: this.#resolveAction(),
+            parent: this.#parent ? this.#parent.name() : null,
+        };
+    }
+
+    #resolveAction() {
+        if (this.#status.name === Status.Sleeping.name) return "Sleeping";
+        if (this.#env.collectWater()) {
             console.log(this.#name + ": Collect 1 water");
             this.#collectedWater = true;
-            return true;
+            return "Active";
         }
-        return false;
+        return "Waiting";
     }
 
     synchronise() {

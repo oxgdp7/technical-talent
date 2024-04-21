@@ -4,6 +4,7 @@ import Status from "./Status";
 class OrangeBlob extends Blob {
     #name;
     #number;
+    #parent;
     #collectedSeed;
     #choppedTree;
     #status;
@@ -14,6 +15,7 @@ class OrangeBlob extends Blob {
         super();
         this.#name = "orange" + number;
         this.#number = number;
+        this.#parent = null;
         this.#collectedSeed = false;
         this.#choppedTree = false;
         this.#status = new Status("Active");
@@ -21,26 +23,40 @@ class OrangeBlob extends Blob {
         this.#env = env;
     }
 
+    addParent(parent) {
+        this.#parent = parent;
+    }
+
     /* The orange blob has 2 actions:
      * For the first action, it waits until it can collect a seed
      * Then, it will plant and then chop down a tree */
 
     act() {
-        if (this.#status.name !== Status.Sleeping.name) {
-            if (this.#collectedSeed) {
-                console.log(this.#name + ": Chop 1 tree (renewable)");
-                this.#env.chopRenewable();
-                this.#collectedSeed = false;
-                this.#choppedTree = true;
-                return true;
-            }
-            if (this.#env.collectSeed()) {
-                console.log(this.#name + ": Collect a seed");
-                this.#collectedSeed = true;
-                return true;
-            }
+        const result = this.#resolveAction();
+        return {
+            color: "orange",
+            number: this.#number,
+            status: result[0],
+            phase: result[1],
+            parent: this.#parent ? this.#parent.name() : null,
+        };
+    }
+
+    #resolveAction() {
+        if (this.#status.name === Status.Sleeping.name) return ["Sleeping", -1];
+        if (this.#collectedSeed) {
+            console.log(this.#name + ": Chop 1 tree (renewable)");
+            this.#env.chopRenewable();
+            this.#collectedSeed = false;
+            this.#choppedTree = true;
+            return ["Active", 1];
         }
-        return false;
+        if (this.#env.collectSeed()) {
+            console.log(this.#name + ": Collect a seed");
+            this.#collectedSeed = true;
+            return ["Active", 0];
+        }
+        return ["Waiting", -1];
     }
 
     synchronise() {
