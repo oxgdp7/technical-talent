@@ -13,17 +13,17 @@ class PurpleBlob extends Blob {
     #status;
     #activated;
 
-    constructor(number, children) {
+    constructor(number, children = []) {
         super();
         this.#name = "purple" + number;
         this.#number = number;
         this.#children = children;
         this.#children.forEach((blob) => blob.addParent(this));
         this.#parent = null;
-        this.#numChildren = this.#children.length;
-        this.#childrenRestarted = new Array(this.#numChildren).fill(false);
         this.#totalRestarted = 0;
         this.#restartedChild = false;
+        this.#numChildren = this.#children.length;
+        this.#childrenRestarted = new Array(this.#numChildren).fill(false);
         this.#status = new Status("Active");
         this.#activated = false;
     }
@@ -32,6 +32,19 @@ class PurpleBlob extends Blob {
         this.#parent = parent;
     }
 
+    addChild(child) {
+        this.#children.push(child)
+        child.addParent(this)
+        this.#numChildren = this.#children.length;
+        this.#childrenRestarted = new Array(this.#numChildren).fill(false);
+    }
+
+    addChildren(children) {
+        this.#children = children;
+        this.#children.forEach((blob) => blob.addParent(this));
+        this.#numChildren = this.#children.length;
+        this.#childrenRestarted = new Array(this.#numChildren).fill(false);
+    }
     /* The purple blob wakes up each of its 'children' once and then goes
      * to sleep */
 

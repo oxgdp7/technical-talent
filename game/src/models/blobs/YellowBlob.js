@@ -12,12 +12,12 @@ class YellowBlob extends Blob {
     #status;
     #activated;
 
-    constructor(number, child, repetitions) {
+    constructor(number, repetitions, child = null) {
         super();
         this.#name = "yellow" + number;
         this.#number = number;
         this.#child = child;
-        this.#child.addParent(this);
+        if (this.#child !== null) this.#child.addParent(this);
         this.#parent = null;
         this.#neededRestarts = repetitions;
         this.#completedRestarts = 0;
@@ -28,6 +28,11 @@ class YellowBlob extends Blob {
 
     addParent(parent) {
         this.#parent = parent;
+    }
+
+    addChild(child) {
+        this.#child.addParent(this);
+        this.#child = child;
     }
 
     /* The yellow blob will wake up its 'child' child #repetitions times and
