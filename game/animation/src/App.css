@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+/* Style for the background container */
+.background-container {
+  position: relative;
+}
+
+/* Style for the background image */
+.background-image {
+  width: 100%;
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Style for the sprite image */
+.blob-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the sprite */
+  width: 100px; /* Adjust size as needed */
+  height: auto; /* Maintain aspect ratio */
+}
