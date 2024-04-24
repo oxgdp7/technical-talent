@@ -46,9 +46,15 @@ function LevelCreator(props) {
 
     const addChildren = (blobs, parent) => {
         if (parent["children"]) {
-            console.log("Test")
-            console.log(parent)
-            parent["children"].forEach((child) => blobs[parent["color"] + parent["number"].toString()].addChild(blobs[child]))
+            parent["children"].forEach((child) =>
+                blobs[parent["color"] + parent["number"].toString()].addChild(
+                    blobs[child],
+                ),
+            );
+        } else if (parent["child"]) {
+            blobs[parent["color"] + parent["number"].toString()].addChild(
+                blobs[parent["child"]],
+            );
         }
     };
 
@@ -56,11 +62,12 @@ function LevelCreator(props) {
         const blobsJSON = JSON.parse(localStorage.getItem("blobs"));
         if (blobsJSON) {
             const orderedBlobs = [];
-            const blobs = {}
+            const blobs = {};
             blobsJSON.forEach((blobJSON) => {
                 const newBlob = loadBlob(blobJSON, props.env);
                 orderedBlobs.push(newBlob);
-                blobs[blobJSON["color"] + blobJSON["number"].toString()] = newBlob;
+                blobs[blobJSON["color"] + blobJSON["number"].toString()] =
+                    newBlob;
             });
             blobsJSON.forEach((blobJSON) => {
                 addChildren(blobs, blobJSON);

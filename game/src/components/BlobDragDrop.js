@@ -51,6 +51,16 @@ function BlobDragDrop() {
     const [blobAdded, setBlobAdded] = useState(false);
 
     useEffect(() => {
+        const numberBlobs = (blobList, count) => {
+            blobList.forEach((blob) => {
+                if (Array.isArray(blob)) {
+                    numberBlobs(blob, count);
+                } else {
+                    blob.id = blob.color + count[blob.color];
+                    count[blob.color] += 1;
+                }
+            });
+        };
         const count = {
             red: 0,
             blue: 0,
@@ -61,10 +71,7 @@ function BlobDragDrop() {
             empty: 0,
         };
         selection.forEach((blobList) => {
-            blobList.forEach((blob) => {
-                blob.id = blob.color + count[blob.color];
-                count[blob.color] += 1;
-            });
+            numberBlobs(blobList, count);
         });
         setBlobAdded(false);
     }, [selection, blobAdded]);
@@ -91,9 +98,26 @@ function BlobDragDrop() {
                 newList.push(addBlobAsChild(blobList[i], oldID, newBlob));
             } else {
                 if (blobList[i].id === oldID) {
-                    newList.push(newBlob);
+                    if (
+                        newBlob.color === "purple" ||
+                        newBlob.color === "yellow"
+                    ) {
+                        newList.push([
+                            newBlob,
+                            {
+                                id: "newEmptyChild",
+                                color: "empty",
+                            },
+                        ]);
+                    } else {
+                        newList.push(newBlob);
+                    }
+                    if (blobList[0].color === "purple") {
+                        newList.push(blobList[i]);
+                    }
+                } else {
+                    newList.push(blobList[i]);
                 }
-                newList.push(blobList[i]);
             }
         }
         return newList;
@@ -141,7 +165,7 @@ function BlobDragDrop() {
                 if (Array.isArray(blobList[i])) {
                     parent.addChild(
                         blobs[blobList[i][0].color][
-                            blobList[i][0].id.replace(blobList[i].color, "")
+                            blobList[i][0].id.replace(blobList[i][0].color, "")
                         ],
                     );
                     createChildren(blobs, blobList[i]);
@@ -159,6 +183,7 @@ function BlobDragDrop() {
     };
 
     const blobString = () => {
+        setBlobAdded(true);
         // Just to create the classes
         const env = new Environment(0, 0);
         let orderedBlobs = [];
@@ -178,44 +203,48 @@ function BlobDragDrop() {
             purple: [],
             yellow: [],
         };
-        selection.forEach((blobList) =>
+        const createBlobs = (blobList) => {
             blobList.forEach((blob) => {
-                let newBlob = null;
-                switch (blob.color) {
-                    case "red":
-                        newBlob = new RedBlob(count[blob.color], env);
-                        break;
-                    case "blue":
-                        newBlob = new BlueBlob(count[blob.color], env);
-                        break;
-                    case "green":
-                        newBlob = new GreenBlob(count[blob.color], env);
-                        break;
-                    case "orange":
-                        newBlob = new OrangeBlob(count[blob.color], env);
-                        break;
-                    case "purple":
-                        newBlob = new PurpleBlob(count[blob.color]);
-                        break;
-                    case "yellow":
-                        // TODO: Change from 10 to a number
-                        // also currently adding a yellow with no child causes an error
-                        newBlob = new YellowBlob(count[blob.color], 10);
-                        break;
-                    case "empty":
-                        break;
-                    default:
-                        throw new Error("Invalid color");
+                if (Array.isArray(blob)) {
+                    createBlobs(blob);
+                } else {
+                    let newBlob = null;
+                    switch (blob.color) {
+                        case "red":
+                            newBlob = new RedBlob(count[blob.color], env);
+                            break;
+                        case "blue":
+                            newBlob = new BlueBlob(count[blob.color], env);
+                            break;
+                        case "green":
+                            newBlob = new GreenBlob(count[blob.color], env);
+                            break;
+                        case "orange":
+                            newBlob = new OrangeBlob(count[blob.color], env);
+                            break;
+                        case "purple":
+                            newBlob = new PurpleBlob(count[blob.color]);
+                            break;
+                        case "yellow":
+                            // TODO: Change from 10 to a number
+                            // also currently adding a yellow with no child causes an error
+                            newBlob = new YellowBlob(count[blob.color], 10);
+                            break;
+                        case "empty":
+                            break;
+                        default:
+                            throw new Error("Invalid color" + blob.color);
+                    }
+                    if (blob.color !== "empty") {
+                        orderedBlobs.push(newBlob);
+                        blobs[blob.color].push(newBlob);
+                        count[blob.color] += 1;
+                    }
                 }
-                if (blob.color !== "empty") {
-                    orderedBlobs.push(newBlob);
-                    blobs[blob.color].push(newBlob);
-                    count[blob.color] += 1;
-                }
-            }),
-        );
+            });
+        };
+        selection.forEach((blobList) => createBlobs(blobList));
         selection.forEach((blobList) => createChildren(blobs, blobList));
-        console.log(orderedBlobs);
         return JSON.stringify(orderedBlobs);
     };
 
@@ -242,6 +271,7 @@ function BlobDragDrop() {
                                 addBlobToSelection(oldID, newBlob)
                             }
                             children={blobList.slice(1)}
+                            margin={0}
                         />
                     );
                 })}

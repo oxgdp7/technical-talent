@@ -31,8 +31,8 @@ class YellowBlob extends Blob {
     }
 
     addChild(child) {
-        this.#child.addParent(this);
         this.#child = child;
+        this.#child.addParent(this);
     }
 
     /* The yellow blob will wake up its 'child' child #repetitions times and

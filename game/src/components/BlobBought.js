@@ -46,7 +46,12 @@ function BlobBought(props) {
                 src={src[props.color]}
                 alt={props.color}
                 width="100px"
-                style={{ border: isDragging ? "1px solid green" : "0px" }}
+                style={{
+                    border: isDragging ? "1px solid green" : "0px",
+                    marginLeft: props.margin
+                        ? props.margin.toString() + "px"
+                        : "0px",
+                }}
             />
         </span>
     );
