@@ -7,7 +7,9 @@ function ProgenitorBlob(props) {
                 key={props.blob.id}
                 id={props.blob.id}
                 color={props.blob.color}
+                repetitions={props.blob.repetitions}
                 buy={props.buy}
+                adjustRepetitions={(e) => props.adjustRepetitions(props.blob.id, e)}
                 margin={props.margin}
             />
             <div></div>
@@ -19,6 +21,7 @@ function ProgenitorBlob(props) {
                             key={child[0].id}
                             buy={(oldID, newBlob) => props.buy(oldID, newBlob)}
                             children={child.slice(1)}
+                            adjustRepetitions={props.adjustRepetitions}
                             margin={props.margin + 100}
                         />
                     );
@@ -28,8 +31,10 @@ function ProgenitorBlob(props) {
                             <BlobBought
                                 key={child.id}
                                 id={child.id}
+                                repetitions={child.repetitions}
                                 color={child.color}
                                 buy={props.buy}
+                                adjustRepetitions={(e) => props.adjustRepetitions(child.id, e)}
                                 margin={props.margin ? props.margin + 100 : 100}
                             />
                             <div></div>

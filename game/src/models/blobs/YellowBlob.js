@@ -40,7 +40,7 @@ class YellowBlob extends Blob {
 
     act() {
         return {
-            color: "blue",
+            color: "yellow",
             number: this.#number,
             status: this.#resolveAction(),
             parent: this.#parent ? this.#parent.name() : null,

@@ -38,7 +38,10 @@ function LevelCreator(props) {
             case "purple":
                 return new PurpleBlob(blob["number"]);
             case "yellow":
-                return new YellowBlob(blob["number"], blob["repetitions"]);
+                return new YellowBlob(
+                    blob["number"],
+                    parseInt(blob["repetitions"], 10),
+                );
             default:
                 throw new Error("Invalid blob color");
         }

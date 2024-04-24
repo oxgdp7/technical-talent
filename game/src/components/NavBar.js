@@ -2,7 +2,13 @@ import { Link } from "react-router-dom";
 
 function NavBar() {
     return (
-        <div className="container">
+        <div
+            className="container"
+            style={{
+                position: "fixed",
+                top: 0,
+            }}
+        >
             <Link to="/level1">
                 <button>Level 1</button>
             </Link>

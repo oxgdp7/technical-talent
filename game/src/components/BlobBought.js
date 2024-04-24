@@ -6,6 +6,7 @@ import orange from "../sprites/orange_150.png";
 import purple from "../sprites/purple_150.png";
 import yellow from "../sprites/yellow_150.png";
 import empty from "../sprites/empty_150.png";
+import RepetitionBox from "./RepetitionBox";
 
 // I've made the smaller pngs here because for dragging, it was taking the
 // original size of the image instead of the resized image, so it was 500px big
@@ -53,6 +54,13 @@ function BlobBought(props) {
                         : "0px",
                 }}
             />
+            {props.color === "yellow" ? (
+                <RepetitionBox
+                    adjustRepetitions={(e) => props.adjustRepetitions(e)}
+                    repetitions={props.repetitions}
+                    margin={props.margin}
+                />
+            ) : null}
         </span>
     );
 }
