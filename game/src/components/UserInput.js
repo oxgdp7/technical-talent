@@ -45,7 +45,7 @@ function UserInput(props) {
             blobsToRepeat.push(blob);
         }
         let purple = new PurpleBlob(0, blobsToRepeat);
-        let yellow = new YellowBlob(0, purple, 10);
+        let yellow = new YellowBlob(0, 10, purple);
         currentBlobs.push(purple, yellow);
         return currentBlobs;
     };

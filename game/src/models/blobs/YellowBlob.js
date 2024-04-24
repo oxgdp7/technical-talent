@@ -4,41 +4,59 @@ import Status from "./Status";
 class YellowBlob extends Blob {
     #name;
     #number;
-    #blob;
+    #child;
+    #parent;
     #neededRestarts;
     #completedRestarts;
-    #restartedBlob;
+    #restartedChild;
     #status;
     #activated;
 
-    constructor(number, blob, repetitions) {
+    constructor(number, repetitions, child = null) {
         super();
         this.#name = "yellow" + number;
         this.#number = number;
-        this.#blob = blob;
+        this.#child = child;
+        if (this.#child !== null) this.#child.addParent(this);
+        this.#parent = null;
         this.#neededRestarts = repetitions;
         this.#completedRestarts = 0;
-        this.#restartedBlob = false;
+        this.#restartedChild = false;
         this.#status = new Status("Active");
         this.#activated = false;
     }
 
-    /* The yellow blob will wake up its 'child' blob #repetitions times and
+    addParent(parent) {
+        this.#parent = parent;
+    }
+
+    addChild(child) {
+        this.#child = child;
+        this.#child.addParent(this);
+    }
+
+    /* The yellow blob will wake up its 'child' child #repetitions times and
      * then go to sleep */
 
     act() {
-        if (this.#completedRestarts >= this.#neededRestarts) {
-            return false;
-        }
-        console.log("Test");
-        if (this.#blob.status().name === Status.Sleeping.name) {
-            console.log(this.#name + ": Restarts " + this.#blob.name());
-            this.#blob.restart();
+        return {
+            color: "yellow",
+            number: this.#number,
+            status: this.#resolveAction(),
+            parent: this.#parent ? this.#parent.name() : null,
+        };
+    }
+
+    #resolveAction() {
+        if (this.#completedRestarts >= this.#neededRestarts) return "Sleeping";
+        if (this.#child.status().name === Status.Sleeping.name) {
+            console.log(this.#name + ": Restarts " + this.#child.name());
+            this.#child.restart();
             this.#completedRestarts++;
-            this.#restartedBlob = true;
-            return true;
+            this.#restartedChild = true;
+            return "Active";
         }
-        return false;
+        return "Waiting";
     }
 
     synchronise() {
@@ -47,23 +65,23 @@ class YellowBlob extends Blob {
             this.#activated = false;
         } else if (this.#completedRestarts === this.#neededRestarts) {
             this.#status = new Status("Sleeping");
-        } else if (this.#restartedBlob) {
+        } else if (this.#restartedChild) {
             this.#status = new Status("Active");
         } else {
             this.#status = new Status("Waiting");
         }
-        this.#restartedBlob = false;
+        this.#restartedChild = false;
         console.log(this.#name + ": Status = " + this.#status);
     }
 
     restart() {
         if (this.#status.name !== Status.Sleeping.name) {
             throw new Error(
-                "Blob should not be restarted if it is not sleeping",
+                "Child should not be restarted if it is not sleeping",
             );
         }
         if (this.#neededRestarts !== this.#completedRestarts) {
-            throw new Error("Blob has not done all of its repeats");
+            throw new Error("Child has not done all of its repeats");
         }
         this.#completedRestarts = 0;
         this.#activated = true;
@@ -81,7 +99,7 @@ class YellowBlob extends Blob {
         return {
             color: "yellow",
             number: this.#number.toString(),
-            child: this.#blob.name(),
+            child: this.#child.name(),
             repetitions: this.#neededRestarts,
         };
     }

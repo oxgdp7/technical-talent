@@ -6,6 +6,10 @@ class Blob {
         }
     }
 
+    addParent() {
+        throw new Error("Add parent must be implemented");
+    }
+
     // Performs its task, if possible at the time of acting
 
     act() {
@@ -33,7 +37,7 @@ class Blob {
     }
 
     toJSON() {
-        throw new Error("to JSON must be implemented")
+        throw new Error("to JSON must be implemented");
     }
 }
 

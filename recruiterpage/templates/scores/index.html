@@ -7,55 +7,68 @@
 
 {% block content %}  
 
-    <fieldset class = "query_wrapper">
-        <legend><h3>Query</h3></legend>        
-        <form class="query_form" method="post">
-            <label for="invited">Has been emailed:</label>
-            <label for="invited_yes">Yes</label>
-            <input type="radio" name="invited" value="yes">            
-            <label for="invited_no">No</label>
-            <input type="radio" name="invited" value="no">
-            <label for="invited_no">Any</label>
-            <input type="radio" name="invited" value="any" checked="true">
-            <br>
-            <label for="score">Minimum player score:</label>
-            <input type="number" name="min_score" min="0" placeholder="Enter Score">
-            <br>
-            <label for="score">Maximum player score:</label>
-            <input type="number" name="max_score" min="0" placeholder="Enter Score">
-            <br>
-            <label for="join_date">Last played:</label>
-            <input type="date" name="join_date">
-            <br>
-            <button type="submit">Submit</button>
-        </form>
-    </fieldset>
- 
+    <fieldset class="query_wrapper">
+      <legend><h3>Query</h3></legend>        
+      <form class="query_form" method="post">
+          <label for="invited">Has been emailed:</label>
+          <label for="invited_yes">Yes</label>
+          <input type="radio" name="invited" value="yes" {% if invited == 'yes' %}checked{% endif %}>            
+          <label for="invited_no">No</label>
+          <input type="radio" name="invited" value="no" {% if invited == 'no' %}checked{% endif %}>
+          <label for="invited_any">Any</label>
+          <input type="radio" name="invited" value="any" {% if invited == 'any' %}checked{% endif %}>
+          <br>
+          <label for="min_score">Minimum player score:</label>
+          <input type="number" name="min_score" min="0" placeholder="Enter Score" value="{{ min_score }}">
+          <br>
+          <label for="max_score">Maximum player score:</label>
+          <input type="number" name="max_score" min="0" placeholder="Enter Score" value="{{ max_score }}">
+          <br>
+          <label for="join_date">Last played:</label>
+          <input type="date" name="join_date" value="{{ join_date }}">
+          <br>
+          <button type="submit">Submit</button>
+      </form>
+    </fieldset> 
 
     <br><h3>User Data</h3>
     <h4>Displaying top {{ length }} results</h4>
 
     <div>
-        <table class="scores_table">
-            <tr>
+      <form action="{{ url_for('scores.update_email_status') }}" method="post">        
+        <div>
+          <button type="submit"><h2>Commit Email Status</h2></button>
+          <br><br>
+            <table class="scores_table">
+              <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Last Played</th>
                 <th>Total Score</th>
                 <th>Emailed</th>
-
-            </tr>
-            {% for value in values %}
-                <tr>
+                <th>Sent Email</th>
+                <th>Actions</th>
+              </tr>
+              {% for value in values %}
+                  <tr>
                     <td>{{ value.name }}</td>
                     <td>{{ value.email }}</td>
                     <td>{{ value.last_played.strftime("%d-%m-%Y %H:%M")}}</td>
                     <td>{{ value.total_score }}</td>
                     <td>{{ value.has_been_emailed }}</td>
-
-                </tr>
-            {% endfor %}
-        </table>
+                    <td>
+                      <input type="checkbox" name="checked_{{ value.id }}" {% if value.has_been_emailed %}checked {%else%} unchecked{% endif %}>
+                      <input type="hidden" name="emailed_{{ value.id }}" value="{{ value.has_been_emailed }}">
+                    </td>                  
+                    <td>                    
+                      <button type="button" onclick="location.href='mailto:{{ value.email }}';">Send email</button>
+                      <button type="button" onclick="navigator.clipboard.writeText('{{ value.email}}');">Copy Email</button>
+                    </td>
+                  </tr>
+              {% endfor %}
+            </table>            
+        </div>    
+      </form>
     </div>
 
 {% endblock %}

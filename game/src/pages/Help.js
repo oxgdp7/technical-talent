@@ -6,7 +6,7 @@ function Help() {
         rounds: "1",
     };
     const blueBlob = {
-        color: "Red",
+        color: "Blue",
         action: "Collects 1 water",
         condition: "Needs 1 water to collect",
         rounds: "1",

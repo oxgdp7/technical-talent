@@ -85,7 +85,7 @@ class Environment {
 
     reset() {
         this.#trees = this.#startingTrees;
-        this.#seeds = false;
+        this.#seeds = this.#trees > 0;
         this.#treesToPlant = 0;
         this.waterLeft = this.#water;
         this.#collectedWood = 0;

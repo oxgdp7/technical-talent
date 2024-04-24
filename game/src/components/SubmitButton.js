@@ -6,8 +6,8 @@ function SubmitButton(props) {
             body: JSON.stringify({
                 level: props.level,
                 google_id: 1,
-                user_email: props.email,
-                user_name: props.name,
+                user_name: localStorage.getItem("name"),
+                user_email: localStorage.getItem("email"),
                 blobs: props.blobs,
             }),
         });

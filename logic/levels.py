@@ -1,30 +1,52 @@
 from logic.levelCreator import calculateScore
 
+levels = {
+    "1": {
+        "costs": {
+            "red": 1,
+            "blue": 1,
+            "green": 2,
+            "orange": 5,
+            "purple": lambda x: 2 * x,
+            "yellow": lambda y: 3 * y,
+        },
+        "woodToCollect": 50,
+        "waterToCollect": 20,
+        "trees": 20,
+        "rateOfWater": 5,
+        "budget": 300,
+    },
+    "2": {
+        "costs": {
+            "red": 5,
+            "blue": 10,
+            "green": 2,
+            "orange": 10,
+            "purple": lambda x: 3 * x,
+            "yellow": lambda y: 2 * y,
+        },
+        "woodToCollect": 80,
+        "waterToCollect": 20,
+        "trees": 5,
+        "rateOfWater": 10,
+        "budget": 1010,
+    },
+}
+
 
 def levelSelector(level: int, blobDetails: list) -> int:
-    score = 0
-    if level == 1:
-        score = level1(blobDetails=blobDetails)
-    else:
+    levelDetails = levels[str(level)]
+    if not levelDetails:
         raise Exception("Invalid level")
-    return max(score, 0)
-
-
-def level1(blobDetails: list) -> int:
-    costs = {
-        "red": 1,
-        "blue": 1,
-        "green": 2,
-        "orange": 5,
-        "purple": lambda x: 2 * x,
-        "yellow": lambda y: 3 * y,
-    }
-    return calculateScore(
-        blobDetails=blobDetails,
-        woodToCollect=50,
-        waterToCollect=20,
-        trees=20,
-        rateOfWater=5,
-        costs=costs,
-        budget=300,
+    return max(
+        0,
+        calculateScore(
+            blobDetails=blobDetails,
+            woodToCollect=levelDetails["woodToCollect"],
+            waterToCollect=levelDetails["waterToCollect"],
+            trees=levelDetails["trees"],
+            rateOfWater=levelDetails["rateOfWater"],
+            costs=levelDetails["costs"],
+            budget=levelDetails["budget"],
+        ),
     )

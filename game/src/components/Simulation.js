@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import BlobList from "./BlobList";
 import Environment from "../models/Environment";
 import EnvironmentDisplay from "./EnvironmentDisplay";
+import SimulateRound from "../models/SimulateRound";
 
 function Simulation(props) {
+    // Re renders the component once all of the blobs have acted
     const [rerender, setRerender] = useState(false);
     const [env, setEnv] = useState(new Environment(0, 0));
     const [blobs, setBlobs] = useState([]);
@@ -21,18 +23,8 @@ function Simulation(props) {
     }, [rerender]);
 
     const startButtonPressed = () => {
-        simulationAct(env);
-        simulationSynchronise();
+        console.log(SimulateRound(blobs, env));
         setRerender(true);
-    };
-
-    const simulationAct = () => {
-        blobs.forEach((blob) => blob.act());
-    };
-
-    const simulationSynchronise = () => {
-        blobs.forEach((blob) => blob.synchronise());
-        env.synchronise();
     };
 
     return (
