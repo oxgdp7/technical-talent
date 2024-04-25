@@ -36,7 +36,7 @@ function DisplayLevelDetails(props) {
 
     return (
         <div className="container">
-            <p>
+            <p style={{marginTop:"30px"}}>
                 You need to get {props.target.wood} wood and{" "}
                 {props.target.water} water. At the start, there are{" "}
                 {props.env.trees()} trees and {props.env.waterFlow()} units of water

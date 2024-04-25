@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Levels from "../models/Levels";
 import DisplayLevelDetails from "./DisplayLevelDetails";
 import Simulation from "./Simulation";
 import SubmitButton from "./SubmitButton";
@@ -14,8 +15,10 @@ import YellowBlob from "../models/blobs/YellowBlob.js";
 function LevelCreator(props) {
     const [blobs, setBlobs] = useState([]);
 
+    const level = Levels(props.level)
+
     const load = (newBlobs) => {
-        props.env.reset();
+        level.env.reset();
         setBlobs(newBlobs);
     };
 
@@ -67,7 +70,7 @@ function LevelCreator(props) {
             const orderedBlobs = [];
             const blobs = {};
             blobsJSON.forEach((blobJSON) => {
-                const newBlob = loadBlob(blobJSON, props.env);
+                const newBlob = loadBlob(blobJSON, level.env);
                 orderedBlobs.push(newBlob);
                 blobs[blobJSON["color"] + blobJSON["number"].toString()] =
                     newBlob;
@@ -77,21 +80,21 @@ function LevelCreator(props) {
             });
             setBlobs(orderedBlobs);
         }
-    }, [props.env]);
+    }, [level.env]);
 
     return (
         <div className="container">
             <DisplayLevelDetails
-                target={props.target}
-                env={props.env}
-                costs={props.costs}
+                target={level.target}
+                env={level.env}
+                costs={level.costs}
             />
             <button type="button" className="btn btn-dark" onClick={shop}>
                 shop
             </button>
-            <UserInput load={load} env={props.env} />
-            <Simulation blobs={blobs} env={props.env} />
-            <SubmitButton level={props.level} blobs={blobs} />
+            <UserInput load={load} env={level.env} />
+            <Simulation blobs={blobs} env={level.env} />
+            <SubmitButton level={level.level} blobs={blobs} />
         </div>
     );
 }

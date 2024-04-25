@@ -57,7 +57,7 @@ function Help() {
 
     return (
         <div className="container">
-            <h1>Help Sheet</h1>
+            <h1 style={{marginTop:"30px"}}>Help Sheet</h1>
             <h2>What is the game about?</h2>
             <p>
                 You are in charge of a village of lots of different blobs. As
