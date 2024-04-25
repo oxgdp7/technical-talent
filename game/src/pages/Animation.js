@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import AnimatedBlob from "../components/AnimatedBlob";
-import "../App.css";
-import JSONToBlob from "../components/JSONToBlob";
+import { useNavigate } from "react-router-dom";
 import Levels from "../models/Levels";
 import SimulateRound from "../models/SimulateRound";
+import JSONToBlob from "../components/JSONToBlob";
+import AnimatedBlob from "../components/AnimatedBlob";
+import "../App.css";
 
 // hover effect to display child/parent relationship
 
@@ -19,6 +20,11 @@ function Animation() {
         const blobsJSON = JSON.parse(localStorage.getItem("blobs"));
         setBlobList(JSONToBlob(blobsJSON, level.env))
     }, []);
+
+    let navigate = useNavigate();
+    const back = () => {
+        navigate("/level" + localStorage.getItem("level"));
+    };
 
     const nextRound = () => {
         const blobDetails = SimulateRound(blobList, level.env)
@@ -95,6 +101,9 @@ function Animation() {
             </div>
             <button type="button" className="btn btn-dark" onClick={nextRound}>
                 Start next round
+            </button>
+            <button type="button" className="btn btn-dark" onClick={back}>
+                Back
             </button>
         </div>
     );

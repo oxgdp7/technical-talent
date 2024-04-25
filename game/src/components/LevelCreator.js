@@ -12,6 +12,7 @@ function LevelCreator(props) {
 
     const level = Levels(props.level);
     const env = level.env
+    localStorage.setItem("level", "1");
 
     const load = (newBlobs) => {
         env.reset();
@@ -20,7 +21,6 @@ function LevelCreator(props) {
 
     let navigate = useNavigate();
     const shop = () => {
-        localStorage.setItem("level", "1");
         navigate("/shop");
     };
     const animation = () => {
