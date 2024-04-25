@@ -40,6 +40,7 @@
 /* Style for the background container */
 .background-container {
   position: relative;
+  overflow: hidden; /* Ensure the blobs stay within the container */
 }
 
 /* Style for the background image */
@@ -54,6 +55,20 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* Center the sprite */
-  width: 100px; /* Adjust size as needed */
+  transform-origin: center center;
+  width: 4%; /* Adjust size as needed */
   height: auto; /* Maintain aspect ratio */
+}
+
+@keyframes bobbing {
+  0%, 100% {
+    transform: translateY(0) translateX(0); /* No displacement */
+  }
+  50% {
+    transform: translateY(-5%) translateX(0); /* Vertical displacement only */
+  }
+}
+
+.bobbing-animation {
+  animation: bobbing 1s ease-in-out infinite;
 }
