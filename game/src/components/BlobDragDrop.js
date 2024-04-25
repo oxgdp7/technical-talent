@@ -100,7 +100,7 @@ function BlobDragDrop() {
     let navigate = useNavigate();
     const loadButtonPressed = () => {
         localStorage.setItem("blobs", BoughtBlobsToString(selection));
-        navigate(localStorage.getItem("level"));
+        navigate("/level" + localStorage.getItem("level"));
     };
 
     // Changes how many times a yellow blob is repeated
