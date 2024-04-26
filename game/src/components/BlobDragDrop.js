@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { useNavigate } from "react-router-dom";
+import ChildlessError from "../utils/ChildlessError.js";
+import NegativeValueError from "../utils/NegativeValueError.js";
 import BlobShop from "./BlobShop.js";
 import Selection from "./Selection.js";
 import BoughtBlobsToString from "../utils/BoughtBlobsToString.js";
@@ -47,6 +49,8 @@ function BlobDragDrop() {
 
     const [blobAdded, setBlobAdded] = useState(false);
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     // Renumbers all the blobs
     useEffect(() => {
         const numberBlobs = (blobList, count) => {
@@ -92,6 +96,16 @@ function BlobDragDrop() {
         );
     };
 
+    const reset = () =>
+        setSelection([
+            [
+                {
+                    id: "empty0",
+                    color: "empty",
+                },
+            ],
+        ]);
+
     const sell = useDrop(() => ({
         accept: "bought",
         drop: (item) => removeBlobFromSelection(item.id),
@@ -99,8 +113,20 @@ function BlobDragDrop() {
 
     let navigate = useNavigate();
     const loadButtonPressed = () => {
-        localStorage.setItem("blobs", BoughtBlobsToString(selection));
-        navigate("/level" + localStorage.getItem("level"));
+        try {
+            localStorage.setItem("blobs", BoughtBlobsToString(selection));
+            navigate("/level" + localStorage.getItem("level"));
+        } catch (e) {
+            if (e instanceof ChildlessError) {
+                setErrorMessage("Ensure all yellow blobs have a child");
+            } else if (e instanceof NegativeValueError) {
+                setErrorMessage(
+                    "Ensure all yellow blobs have positive repetitions",
+                );
+            } else {
+                setErrorMessage("Unknown error");
+            }
+        }
     };
 
     // Changes how many times a yellow blob is repeated
@@ -121,7 +147,7 @@ function BlobDragDrop() {
 
     return (
         <div className="container">
-            <BlobShop sell={sell} BlobsToBuy={BlobsToBuy} />
+            <BlobShop sell={sell} BlobsToBuy={BlobsToBuy} reset={reset} />
             <Selection
                 selection={selection}
                 addBlobToSelection={addBlobToSelection}
@@ -136,6 +162,7 @@ function BlobDragDrop() {
                     Load blobs
                 </button>
             </div>
+            <h1>{errorMessage ? errorMessage : null}</h1>
         </div>
     );
 }

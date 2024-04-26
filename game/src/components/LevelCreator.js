@@ -2,16 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Levels from "../models/Levels";
 import DisplayLevelDetails from "./DisplayLevelDetails";
-import Simulation from "./Simulation";
-import SubmitButton from "./SubmitButton";
-import UserInput from "./UserInput";
 import JSONToBlob from "./JSONToBlob";
+import SubmitButton from "./SubmitButton";
 
 function LevelCreator(props) {
     const [blobs, setBlobs] = useState([]);
 
     const level = Levels(props.level);
-    const env = level.env
+    const env = level.env;
     localStorage.setItem("level", "1");
 
     const load = (newBlobs) => {
@@ -29,7 +27,7 @@ function LevelCreator(props) {
 
     useEffect(() => {
         const blobsJSON = JSON.parse(localStorage.getItem("blobs"));
-        setBlobs(JSONToBlob(blobsJSON, env))
+        setBlobs(JSONToBlob(blobsJSON, env));
     }, []);
 
     return (
@@ -39,14 +37,20 @@ function LevelCreator(props) {
                 env={env}
                 costs={level.costs}
             />
-            <button type="button" className="btn btn-dark" onClick={shop}>
-                Shop
-            </button>
-            <button type="button" className="btn btn-dark" onClick={animation}>
-                Animation
-            </button>
-            <UserInput load={load} env={env} />
-            <Simulation blobs={blobs} env={env} />
+            <div className="container">
+                <button type="button" className="btn btn-dark" onClick={shop}>
+                    Shop
+                </button>
+            </div>
+            <div className="container">
+                <button
+                    type="button"
+                    className="btn btn-dark"
+                    onClick={animation}
+                >
+                    Animation
+                </button>
+            </div>
             <SubmitButton level={level.level} blobs={blobs} />
         </div>
     );

@@ -1,3 +1,4 @@
+import ChildlessError from "../../utils/ChildlessError";
 import Blob from "./Blob";
 import Status from "./Status";
 
@@ -96,6 +97,9 @@ class YellowBlob extends Blob {
     }
 
     toJSON() {
+        if (!this.#child) {
+            throw new ChildlessError();
+        }
         return {
             color: "yellow",
             number: this.#number.toString(),

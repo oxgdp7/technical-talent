@@ -35,6 +35,13 @@ function BlobShop(props) {
                         />
                     );
                 })}
+                <button
+                    type="button"
+                    className="btn btn-dark"
+                    onClick={props.reset}
+                >
+                    Reset
+                </button>
             </div>
         </div>
     );

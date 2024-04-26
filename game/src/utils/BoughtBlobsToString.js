@@ -1,3 +1,4 @@
+import NegativeValueError from "./NegativeValueError.js";
 import Environment from "../models/Environment.js";
 import RedBlob from "../models/blobs/RedBlob.js";
 import BlueBlob from "../models/blobs/BlueBlob.js";
@@ -30,8 +31,9 @@ function BoughtBlobsToString(selection) {
                         newBlob = new PurpleBlob(count[blob.color]);
                         break;
                     case "yellow":
-                        // TODO: Change from 10 to a number
-                        // also currently adding a yellow with no child causes an error
+                        if (blob.repetitions < 0) {
+                            throw new NegativeValueError();
+                        }
                         newBlob = new YellowBlob(
                             count[blob.color],
                             blob.repetitions,
@@ -50,6 +52,7 @@ function BoughtBlobsToString(selection) {
             }
         });
     };
+
     const createChildren = (blobs, blobList) => {
         if (blobList.length > 1) {
             const parent =
