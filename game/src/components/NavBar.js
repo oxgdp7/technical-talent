@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 function NavBar() {
+    const resetBlobs = () => localStorage.removeItem("blobs")
+
     return (
         <div
             className="container"
@@ -10,10 +12,10 @@ function NavBar() {
             }}
         >
             <Link to="/level1">
-                <button>Level 1</button>
+                <button onClick={resetBlobs}>Level 1</button>
             </Link>
             <Link to="/level2">
-                <button>Level 2</button>
+                <button onClick={resetBlobs}>Level 2</button>
             </Link>
             <Link to="/help">
                 <button>Help</button>

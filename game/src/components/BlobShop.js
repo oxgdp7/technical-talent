@@ -32,6 +32,7 @@ function BlobShop(props) {
                             key={blob.id}
                             id={blob.id}
                             color={blob.color}
+                            buy={props.buy}
                         />
                     );
                 })}

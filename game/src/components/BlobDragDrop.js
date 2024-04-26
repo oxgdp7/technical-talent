@@ -89,11 +89,41 @@ function BlobDragDrop() {
 
     // TODO: Fix for when blob has children
     const removeBlobFromSelection = (id) => {
-        setSelection((selection) =>
-            selection
-                .map((blobList) => blobList.filter((blob) => id !== blob.id))
-                .filter((blobList) => blobList.length > 0),
-        );
+        const recursiveDeletion = (blobList) => {
+            if (blobList[0].id === id) {
+                return []
+            }
+            let newList = blobList.filter(
+                (blob) =>
+                    (Array.isArray(blob) && blob[0].id !== id) ||
+                    blob.id !== id,
+            );
+            newList.forEach((blob) => {
+                if (Array.isArray(blob)) {
+                    recursiveDeletion(blob);
+                }
+            });
+            newList.filter((blobList) => blobList.length > 0)
+            return newList
+        };
+        const removeFromSelection = (selection) => {
+            let newSelection = selection.map((blobList) =>
+                recursiveDeletion(blobList),
+            );
+            if (!newSelection) {
+                return [
+                    [
+                        {
+                            id: "empty0",
+                            color: "empty",
+                        },
+                    ],
+                ];
+            }
+            return newSelection.filter((blobList) => blobList.length > 0);
+        };
+        setSelection((selection) => removeFromSelection(selection));
+        setBlobAdded(true)
     };
 
     const reset = () =>
@@ -147,7 +177,17 @@ function BlobDragDrop() {
 
     return (
         <div className="container">
-            <BlobShop sell={sell} BlobsToBuy={BlobsToBuy} reset={reset} />
+            <BlobShop
+                sell={sell}
+                BlobsToBuy={BlobsToBuy}
+                reset={reset}
+                buy={(newBlob) =>
+                    addBlobToSelection(
+                        selection[selection.length - 1][0].id,
+                        newBlob,
+                    )
+                }
+            />
             <Selection
                 selection={selection}
                 addBlobToSelection={addBlobToSelection}

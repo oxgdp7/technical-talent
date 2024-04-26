@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Levels from "../models/Levels";
+import BlobList from "./BlobList";
 import DisplayLevelDetails from "./DisplayLevelDetails";
 import JSONToBlob from "./JSONToBlob";
 import SubmitButton from "./SubmitButton";
@@ -11,11 +12,6 @@ function LevelCreator(props) {
     const level = Levels(props.level);
     const env = level.env;
     localStorage.setItem("level", "1");
-
-    const load = (newBlobs) => {
-        env.reset();
-        setBlobs(newBlobs);
-    };
 
     let navigate = useNavigate();
     const shop = () => {
@@ -42,6 +38,7 @@ function LevelCreator(props) {
                     Shop
                 </button>
             </div>
+            <BlobList blobs={blobs} />
             <div className="container">
                 <button
                     type="button"

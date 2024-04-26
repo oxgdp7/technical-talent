@@ -3,7 +3,8 @@ function BlobList(props) {
         return (
             <tr key={blob.name()}>
                 <th scope="row">{blob.name()}</th>
-                <td>{blob.status().toString()}</td>
+                <td>{props.showStatus ? blob.status().toString() : null}</td>
+                <td>{blob.parent() ? blob.parent().name() : null}</td>
             </tr>
         );
     };
@@ -16,7 +17,10 @@ function BlobList(props) {
                     <thead>
                         <tr>
                             <th scope="col-2">Name</th>
-                            <th scope="col-2">Status</th>
+                            <th scope="col-2">
+                                {props.showStatus ? "Status" : null}
+                            </th>
+                            <th scope="col-2">Parent</th>
                         </tr>
                     </thead>
                     <tbody>{props.blobs.map((blob) => showBlob(blob))}</tbody>

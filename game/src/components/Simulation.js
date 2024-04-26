@@ -30,7 +30,7 @@ function Simulation(props) {
     return (
         <div className="Container">
             <h1>Simulation</h1>
-            <BlobList blobs={blobs} />
+            <BlobList blobs={blobs} status={true}/>
             <EnvironmentDisplay
                 trees={env.trees()}
                 water={env.waterFlow()}

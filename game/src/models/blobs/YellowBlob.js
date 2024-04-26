@@ -96,6 +96,10 @@ class YellowBlob extends Blob {
         return this.#name;
     }
 
+    parent() {
+        return this.#parent;
+    }
+
     toJSON() {
         if (!this.#child) {
             throw new ChildlessError();

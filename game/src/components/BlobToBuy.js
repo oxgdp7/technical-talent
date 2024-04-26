@@ -1,3 +1,4 @@
+import React from "react";
 import { useDrag } from "react-dnd";
 import red from "../sprites/red_150.png";
 import blue from "../sprites/blue_150.png";
@@ -24,7 +25,7 @@ function BlobToBuy(props) {
 
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "toBuy",
-        item: { id: props.id, color:props.color },
+        item: { id: props.id, color: props.color },
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
@@ -35,6 +36,9 @@ function BlobToBuy(props) {
             ref={drag}
             src={src[props.color]}
             alt={props.color}
+            onDoubleClick={() =>
+                props.buy({ id: props.id, color: props.color })
+            }
             width="100px"
             style={{ border: isDragging ? "1px solid green" : "0px" }}
         />
