@@ -11,7 +11,7 @@ function LevelCreator(props) {
 
     const level = Levels(props.level);
     const env = level.env;
-    localStorage.setItem("level", "1");
+    localStorage.setItem("level", props.level);
 
     let navigate = useNavigate();
     const shop = () => {
@@ -48,7 +48,7 @@ function LevelCreator(props) {
                     Animation
                 </button>
             </div>
-            <SubmitButton level={level.level} blobs={blobs} />
+            <SubmitButton level={props.level} blobs={blobs} />
         </div>
     );
 }
