@@ -8,7 +8,7 @@ from model import db, User
 
 bp = Blueprint("scores", __name__)
 
-def query(invited, min_score, max_score, join_date):
+def query(invited, min_score, max_score, join_date, max_entries):
     # Build query
     query = User.query
     if invited != "any":
@@ -22,7 +22,7 @@ def query(invited, min_score, max_score, join_date):
 
 
     # Display higher scores first
-    return query.order_by(User.total_score.desc()).limit(20).all()
+    return query.order_by(User.total_score.desc()).limit(max_entries).all()
 
 
 @bp.route("/", methods=("GET", "POST"))
@@ -34,6 +34,7 @@ def index():
         min_score = request.form["min_score"]
         max_score = request.form["max_score"]
         join_date = request.form["join_date"]         
+        max_entries =  request.form["max_entries"]   
 
         # Store form data in cookies
         response = make_response(redirect("/"))
@@ -41,6 +42,7 @@ def index():
         response.set_cookie("min_score", min_score)
         response.set_cookie("max_score", max_score)
         response.set_cookie("join_date", join_date)
+        response.set_cookie("max_entries", max_entries)
 
         return response
 
@@ -49,12 +51,13 @@ def index():
         invited = request.cookies.get("invited", "any")
         min_score = request.cookies.get("min_score", "")
         max_score = request.cookies.get("max_score", "")
-        join_date = request.cookies.get("join_date", "")        
+        join_date = request.cookies.get("join_date", "")
+        max_entries =  request.cookies.get("max_entries", 20)          
         
-        values = query(invited, min_score, max_score, join_date)
+        values = query(invited, min_score, max_score, join_date, max_entries)
         
         return render_template("scores/index.html", values=values, length=len(values),
-                invited=invited, min_score=min_score, max_score=max_score, join_date=join_date)
+                invited=invited, min_score=min_score, max_score=max_score, join_date=join_date, max_entries=max_entries)
 
 
 @bp.route('/update_email_status', methods=['POST'])

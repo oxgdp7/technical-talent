@@ -1,12 +1,30 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1><a href="{{ url_for('scores.index') }}">Scores</a></h1>
+  <h1><a href="{{ url_for('scores.index') }}">Dashboard</a></h1>
   <h1><a href="{{ url_for('vis.visual') }}">{% block title %}Visualisations{% endblock %}</a></h1>
 {% endblock %}
 
 {% block content %}  
 
-    <h3> Visualisations</h3>
+    <!-- IGNORE syntax errors from js if they appear-->
+    <br>
+    <div id="plot">
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script>
+        var plot_data = {{ hist_json | safe}};
+        Plotly.plot('plot', plot_data.data, plot_data.layout);
+    </script>
+    </div>
+
+
+    <hr>    
+    <div id="plot2">
+    <script>
+        var plot_data = {{ pie_json | safe }};
+        Plotly.plot('plot2', plot_data.data, plot_data.layout);
+    </script>
+    </div>
+
 
 {% endblock %}

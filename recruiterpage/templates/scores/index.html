@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1><a href="{{ url_for('scores.index') }}">{% block title %}Scores{% endblock %}</a></h1>
+  <h1><a href="{{ url_for('scores.index') }}">{% block title %}Dashboard{% endblock %}</a></h1>
   <h1><a href="{{ url_for('vis.visual') }}">Visualisations</a></h1>
 {% endblock %}
 
 {% block content %}  
 
+    
     <fieldset class="query_wrapper">
       <legend><h3>Query</h3></legend>        
       <form class="query_form" method="post">
@@ -24,20 +25,29 @@
           <label for="max_score">Maximum player score:</label>
           <input type="number" name="max_score" min="0" placeholder="Enter Score" value="{{ max_score }}">
           <br>
+          <label for="max_entries">Maximum number of entries to display:</label>
+          <input type="number" name="max_entries" min = "0" placeholder="Enter number of results" value="{{ max_entries }}">
+          <br>
+          
           <label for="join_date">Last played:</label>
           <input type="date" name="join_date" value="{{ join_date }}">
           <br>
           <button type="submit">Submit</button>
+          <br>
+          <br>
       </form>
     </fieldset> 
 
-    <br><h3>User Data</h3>
-    <h4>Displaying top {{ length }} results</h4>
-
+    <br>
+    <hr>
+    <h2>User Data</h2>
+    
+    <h4>Displaying {{ length }} results</h4>
+    
     <div>
       <form action="{{ url_for('scores.update_email_status') }}" method="post">        
         <div>
-          <button type="submit"><h2>Commit Email Status</h2></button>
+          <button type="submit"><h3>Commit Email Status</h3></button>
           <br><br>
             <table class="scores_table">
               <tr>
