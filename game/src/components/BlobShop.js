@@ -4,22 +4,13 @@ function BlobShop(props) {
     return (
         <div className="container">
             <div
-                height="50px"
-                style={{
-                    position: "fixed",
-                    top: 29.5,
-                    width: "80vw",
-                    height: "50px",
-                    backgroundColor: "white",
-                }}
-            ></div>
-            <div
                 className="shop"
                 ref={props.sell}
                 style={{
                     position: "fixed",
                     top: 50,
-                    width: "80vw",
+                    left: "8%",
+                    width: "84vw",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -43,6 +34,14 @@ function BlobShop(props) {
                 >
                     Reset
                 </button>
+                <label
+                    style={{
+                        margin: "20px",
+                        color: props.totalCost > props.budget ? "red" : "black",
+                    }}
+                >
+                    Spent: {props.totalCost} / {props.budget}
+                </label>
             </div>
         </div>
     );

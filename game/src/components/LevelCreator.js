@@ -32,6 +32,7 @@ function LevelCreator(props) {
                 target={level.target}
                 env={env}
                 costs={level.costs}
+                marginTop={"30px"}
             />
             <div className="container">
                 <button type="button" className="btn btn-dark" onClick={shop}>

@@ -2,9 +2,7 @@ import ProgenitorBlob from "./ProgenitorBlob";
 
 function Selection(props) {
     return (
-        <div className="Selection" style={{
-            marginTop: "200px"
-        }}>
+        <div className="Selection" >
             {props.selection.map((blobList) => {
                 return (
                     <ProgenitorBlob

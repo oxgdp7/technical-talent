@@ -13,16 +13,16 @@ function Levels(level) {
             },
             costs: {
                 // Red, blue, green and orange all have fixed costs
-                redBlob: new BlobCostCreator((_) => 1, "1"),
-                blueBlob: new BlobCostCreator((_) => 1, "1"),
-                greenBlob: new BlobCostCreator((_) => 2, "2"),
-                orangeBlob: new BlobCostCreator((_) => 5, "5"),
+                red: new BlobCostCreator((_) => 1, "1"),
+                blue: new BlobCostCreator((_) => 1, "1"),
+                green: new BlobCostCreator((_) => 2, "2"),
+                orange: new BlobCostCreator((_) => 5, "5"),
                 // Purple and yellow have costs that depend on the number of repetitions
-                purpleBlob: new BlobCostCreator(
+                purple: new BlobCostCreator(
                     (x) => 2 * x,
                     "2 * number of blobs repeated",
                 ),
-                yellowBlob: new BlobCostCreator(
+                yellow: new BlobCostCreator(
                     (x) => 3 * x,
                     "3 * number of repetitions",
                 ),
@@ -39,15 +39,15 @@ function Levels(level) {
                 water: 20,
             },
             costs: {
-                redBlob: new BlobCostCreator((_) => 1, "5"),
-                blueBlob: new BlobCostCreator((_) => 1, "10"),
-                greenBlob: new BlobCostCreator((_) => 2, "2"),
-                orangeBlob: new BlobCostCreator((_) => 5, "10"),
-                purpleBlob: new BlobCostCreator(
+                red: new BlobCostCreator((_) => 1, "5"),
+                blue: new BlobCostCreator((_) => 1, "10"),
+                green: new BlobCostCreator((_) => 2, "2"),
+                orange: new BlobCostCreator((_) => 5, "10"),
+                purple: new BlobCostCreator(
                     (x) => 3 * x,
                     "3 * number of blobs repeated",
                 ),
-                yellowBlob: new BlobCostCreator(
+                yellow: new BlobCostCreator(
                     (x) => 2 * x,
                     "2 * number of repetitions",
                 ),

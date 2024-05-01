@@ -7,6 +7,7 @@ import BlobShop from "./BlobShop.js";
 import Selection from "./Selection.js";
 import BoughtBlobsToString from "../utils/BoughtBlobsToString.js";
 import AddBlobToSelection from "../utils/AddBlobToSelection.js";
+import Levels from "../models/Levels.js";
 
 // Sets up the shop blobs
 const BlobsToBuy = [
@@ -36,7 +37,7 @@ const BlobsToBuy = [
     },
 ];
 
-function BlobDragDrop() {
+function BlobDragDrop(props) {
     // Blobs that have been 'purchased'
     const [selection, setSelection] = useState([
         [
@@ -51,33 +52,74 @@ function BlobDragDrop() {
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    // Renumbers all the blobs
+    const [totalCost, setTotalCost] = useState(0);
+
+    const level = Levels(localStorage.getItem("level"));
+
+    // Renumbers all the blobs, recalculates cost
     useEffect(() => {
-        const numberBlobs = (blobList, count) => {
-            blobList.forEach((blob) => {
-                if (Array.isArray(blob)) {
-                    numberBlobs(blob, count);
-                } else {
-                    blob.id = blob.color + count[blob.color];
-                    count[blob.color] += 1;
-                }
+        const numberBlobs = () => {
+            const numberBlobList = (blobList, count) => {
+                blobList.forEach((blob) => {
+                    if (Array.isArray(blob)) {
+                        numberBlobList(blob, count);
+                    } else {
+                        blob.id = blob.color + count[blob.color];
+                        count[blob.color] += 1;
+                    }
+                });
+            };
+            const count = {
+                red: 0,
+                blue: 0,
+                green: 0,
+                orange: 0,
+                purple: 0,
+                yellow: 0,
+                empty: 0,
+            };
+
+            selection.forEach((blobList) => {
+                numberBlobList(blobList, count);
             });
         };
-        const count = {
-            red: 0,
-            blue: 0,
-            green: 0,
-            orange: 0,
-            purple: 0,
-            yellow: 0,
-            empty: 0,
+
+        const calculateBlobs = () => {
+            let cost = 0;
+            const calculateBlobList = (blobList) => {
+                blobList.forEach((blob) => {
+                    if (Array.isArray(blob)) {
+                        calculateBlobList(blob);
+                    } else {
+                        if (blob.color === "purple") {
+                            if (blobList.length !== 1) {
+                                cost += level["costs"][blob.color].cost(
+                                    blobList.length,
+                                );
+                            }
+                        } else if (blob.color === "yellow") {
+                            if (blob.repetitions >= 1) {
+                                cost += level["costs"][blob.color].cost(
+                                    blob.repetitions,
+                                );
+                            }
+                        } else if (blob.color !== "empty") {
+                            cost += level["costs"][blob.color].cost();
+                        }
+                    }
+                });
+            };
+
+            selection.forEach((blobList) => {
+                calculateBlobList(blobList);
+            });
+            setTotalCost(cost);
         };
 
-        selection.forEach((blobList) => {
-            numberBlobs(blobList, count);
-        });
+        numberBlobs();
+        calculateBlobs();
         setBlobAdded(false);
-    }, [selection, blobAdded]);
+    }, [selection, blobAdded, level]);
 
     // Buy a blob and add it to the display
     const addBlobToSelection = (oldID, newBlob) => {
@@ -87,11 +129,10 @@ function BlobDragDrop() {
         setBlobAdded(true);
     };
 
-    // TODO: Fix for when blob has children
     const removeBlobFromSelection = (id) => {
         const recursiveDeletion = (blobList) => {
             if (blobList[0].id === id) {
-                return []
+                return [];
             }
             let newList = blobList.filter(
                 (blob) =>
@@ -103,8 +144,8 @@ function BlobDragDrop() {
                     recursiveDeletion(blob);
                 }
             });
-            newList.filter((blobList) => blobList.length > 0)
-            return newList
+            newList.filter((blobList) => blobList.length > 0);
+            return newList;
         };
         const removeFromSelection = (selection) => {
             let newSelection = selection.map((blobList) =>
@@ -123,7 +164,7 @@ function BlobDragDrop() {
             return newSelection.filter((blobList) => blobList.length > 0);
         };
         setSelection((selection) => removeFromSelection(selection));
-        setBlobAdded(true)
+        setBlobAdded(true);
     };
 
     const reset = () =>
@@ -173,6 +214,8 @@ function BlobDragDrop() {
             });
         };
         selection.forEach((blobList) => adjustList(blobList, blobID, newVal));
+        // Recalculates total cost
+        setBlobAdded(true)
     };
 
     return (
@@ -187,12 +230,15 @@ function BlobDragDrop() {
                         newBlob,
                     )
                 }
+                budget={props.budget}
+                totalCost={totalCost}
             />
             <Selection
                 selection={selection}
                 addBlobToSelection={addBlobToSelection}
                 adjustRepetitions={adjustRepetitions}
             />
+            <h1>{errorMessage ? errorMessage : null}</h1>
             <div className="row mt-3">
                 <button
                     type="button"
@@ -202,7 +248,6 @@ function BlobDragDrop() {
                     Load blobs
                 </button>
             </div>
-            <h1>{errorMessage ? errorMessage : null}</h1>
         </div>
     );
 }
