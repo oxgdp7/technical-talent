@@ -1,4 +1,37 @@
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+
 function Help() {
+    const [userDetails, setUserDetails] = useState({});
+    const navigate = useNavigate();
+
+    const getUserDetails = async (accessToken) => {
+        const response = await fetch(
+          `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`
+        );
+        const data = await response.json();
+        setUserDetails(data);
+      };
+    
+      useEffect(() => {
+        const accessToken = Cookies.get("access_token");
+    
+        if (!accessToken) {
+          navigate("/");
+        }
+    
+        getUserDetails(accessToken);
+      }, [navigate]);
+    
+      console.log(userDetails);
+    
+      useEffect(() => {
+        console.log(userDetails.name);
+        localStorage.setItem("name", userDetails.name);
+        localStorage.setItem("email", userDetails.email);
+      }, [userDetails])
+
     const redBlob = {
         color: "Red",
         action: "Chops 1 tree",

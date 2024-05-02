@@ -6,21 +6,31 @@ import Level1 from "./pages/Level1.js";
 import Level2 from "./pages/Level2.js";
 import Help from "./pages/Help.js";
 import BlobShop from "./pages/BlobShop";
+import { BrowserRouter } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 function App() {
+
+    const isLoggedin = () => {
+      if(localStorage.name && localStorage.name.length > 0)
+        return true;
+      return false;
+    }
+
     return (
         <div className="container">
-            <Router>
+            <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    {isLoggedin ? (                    
                     <Route element={<Layout />}>
                         <Route path="/level1" element={<Level1 />} />
                         <Route path="/level2" element={<Level2 />} />
                         <Route path="/help" element={<Help />} />
                         <Route path="/shop" element={<BlobShop />} />
-                    </Route>
+                    </Route>) : <Navigate to="/"/>}
                 </Routes>
-            </Router>
+            </BrowserRouter>
         </div>
     );
 }

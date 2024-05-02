@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function NavBar() {
+
+    const handleLogout = () => {
+      Cookies.remove("access_token");
+      window.location.href = "http://localhost:3000"; 
+    }
+
     return (
         <div className="container">
             <Link to="/level1">
@@ -12,6 +19,7 @@ function NavBar() {
             <Link to="/help">
                 <button>Help</button>
             </Link>
+            <button onClick={handleLogout}>Logout</button>
         </div>
     );
 }
