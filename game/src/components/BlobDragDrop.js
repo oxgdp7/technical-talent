@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { useNavigate } from "react-router-dom";
-import BlobToBuy from "./BlobToBuy.js";
-import Environment from "../models/Environment.js";
-import RedBlob from "../models/blobs/RedBlob.js";
-import BlueBlob from "../models/blobs/BlueBlob.js";
-import GreenBlob from "../models/blobs/GreenBlob.js";
-import OrangeBlob from "../models/blobs/OrangeBlob.js";
-import PurpleBlob from "../models/blobs/PurpleBlob.js";
-import YellowBlob from "../models/blobs/YellowBlob.js";
-import ProgenitorBlob from "./ProgenitorBlob.js";
+import ChildlessError from "../utils/ChildlessError.js";
+import NegativeValueError from "../utils/NegativeValueError.js";
+import BlobShop from "./BlobShop.js";
+import Selection from "./Selection.js";
+import BoughtBlobsToString from "../utils/BoughtBlobsToString.js";
+import AddBlobToSelection from "../utils/AddBlobToSelection.js";
+import Levels from "../models/Levels.js";
 
-const BlobList = [
+// Sets up the shop blobs
+const BlobsToBuy = [
     {
         id: 1,
         color: "red",
@@ -38,7 +37,8 @@ const BlobList = [
     },
 ];
 
-function BlobDragDrop() {
+function BlobDragDrop(props) {
+    // Blobs that have been 'purchased'
     const [selection, setSelection] = useState([
         [
             {
@@ -50,75 +50,132 @@ function BlobDragDrop() {
 
     const [blobAdded, setBlobAdded] = useState(false);
 
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const [totalCost, setTotalCost] = useState(0);
+
+    const level = Levels(localStorage.getItem("level"));
+
+    // Renumbers all the blobs, recalculates cost
     useEffect(() => {
-        const count = {
-            red: 0,
-            blue: 0,
-            green: 0,
-            orange: 0,
-            purple: 0,
-            yellow: 0,
-            empty: 0,
-        };
-        selection.forEach((blobList) => {
-            blobList.forEach((blob) => {
-                blob.id = blob.color + count[blob.color];
-                count[blob.color] += 1;
+        const numberBlobs = () => {
+            const numberBlobList = (blobList, count) => {
+                blobList.forEach((blob) => {
+                    if (Array.isArray(blob)) {
+                        numberBlobList(blob, count);
+                    } else {
+                        blob.id = blob.color + count[blob.color];
+                        count[blob.color] += 1;
+                    }
+                });
+            };
+            const count = {
+                red: 0,
+                blue: 0,
+                green: 0,
+                orange: 0,
+                purple: 0,
+                yellow: 0,
+                empty: 0,
+            };
+
+            selection.forEach((blobList) => {
+                numberBlobList(blobList, count);
             });
-        });
+        };
+
+        const calculateBlobs = () => {
+            let cost = 0;
+            const calculateBlobList = (blobList) => {
+                blobList.forEach((blob) => {
+                    if (Array.isArray(blob)) {
+                        calculateBlobList(blob);
+                    } else {
+                        if (blob.color === "purple") {
+                            if (blobList.length !== 1) {
+                                cost += level["costs"][blob.color].cost(
+                                    blobList.length,
+                                );
+                            }
+                        } else if (blob.color === "yellow") {
+                            if (blob.repetitions >= 1) {
+                                cost += level["costs"][blob.color].cost(
+                                    blob.repetitions,
+                                );
+                            }
+                        } else if (blob.color !== "empty") {
+                            cost += level["costs"][blob.color].cost();
+                        }
+                    }
+                });
+            };
+
+            selection.forEach((blobList) => {
+                calculateBlobList(blobList);
+            });
+            setTotalCost(cost);
+        };
+
+        numberBlobs();
+        calculateBlobs();
         setBlobAdded(false);
-    }, [selection, blobAdded]);
+    }, [selection, blobAdded, level]);
 
-    const addBlobToEnd = (selection, blob) => {
-        const newRow = [blob];
-        if (blob.color === "purple" || blob.color === "yellow") {
-            newRow.push({
-                id: "newEmptyChild",
-                color: "empty",
-            });
-        }
-        return [
-            ...selection.slice(0, -1),
-            newRow,
-            selection[selection.length - 1],
-        ];
-    };
-
-    const addBlobAsChild = (blobList, oldID, newBlob) => {
-        const newList = [];
-        for (let i = 0; i < blobList.length; i++) {
-            if (Array.isArray(blobList[i])) {
-                newList.push(addBlobAsChild(blobList[i], oldID, newBlob));
-            } else {
-                if (blobList[i].id === oldID) {
-                    newList.push(newBlob);
-                }
-                newList.push(blobList[i]);
-            }
-        }
-        return newList;
-    };
-
+    // Buy a blob and add it to the display
     const addBlobToSelection = (oldID, newBlob) => {
-        const blob = {
-            id: "newBlob",
-            color: newBlob.color,
-        };
-        if (selection[selection.length - 1][0].id === oldID) {
-            setSelection((selection) => addBlobToEnd(selection, blob));
-        } else {
-            setSelection((selection) => addBlobAsChild(selection, oldID, blob));
-        }
+        setSelection((selection) =>
+            AddBlobToSelection(selection, oldID, newBlob),
+        );
         setBlobAdded(true);
     };
 
     const removeBlobFromSelection = (id) => {
-        setSelection((selection) =>
-            selection
-                .map((blobList) => blobList.filter((blob) => id !== blob.id))
-                .filter((blobList) => blobList.length > 0),
-        );
+        const recursiveDeletion = (blobList) => {
+            if (blobList[0].id === id) {
+                return [];
+            }
+            let newList = blobList.filter(
+                (blob) =>
+                    (Array.isArray(blob) && blob[0].id !== id) ||
+                    blob.id !== id,
+            );
+            newList.forEach((blob) => {
+                if (Array.isArray(blob)) {
+                    recursiveDeletion(blob);
+                }
+            });
+            newList.filter((blobList) => blobList.length > 0);
+            return newList;
+        };
+        const removeFromSelection = (selection) => {
+            let newSelection = selection.map((blobList) =>
+                recursiveDeletion(blobList),
+            );
+            if (!newSelection) {
+                return [
+                    [
+                        {
+                            id: "empty0",
+                            color: "empty",
+                        },
+                    ],
+                ];
+            }
+            return newSelection.filter((blobList) => blobList.length > 0);
+        };
+        setSelection((selection) => removeFromSelection(selection));
+        setBlobAdded(true);
     };
+
+    const reset = () =>
+        setSelection([
+            [
+                {
+                    id: "empty0",
+                    color: "empty",
+                },
+            ],
+        ]);
 
     const sell = useDrop(() => ({
         accept: "bought",
@@ -127,125 +184,61 @@ function BlobDragDrop() {
 
     let navigate = useNavigate();
     const loadButtonPressed = () => {
-        localStorage.setItem("blobs", blobString());
-        navigate(localStorage.getItem("level"));
-    };
-
-    const createChildren = (blobs, blobList) => {
-        if (blobList.length > 1) {
-            const parent =
-                blobs[blobList[0].color][
-                    blobList[0].id.replace(blobList[0].color, "")
-                ];
-            for (let i = 1; i < blobList.length; i++) {
-                if (Array.isArray(blobList[i])) {
-                    parent.addChild(
-                        blobs[blobList[i][0].color][
-                            blobList[i][0].id.replace(blobList[i].color, "")
-                        ],
-                    );
-                    createChildren(blobs, blobList[i]);
-                } else {
-                    if (blobList[i].color !== "empty") {
-                        parent.addChild(
-                            blobs[blobList[i].color][
-                                blobList[i].id.replace(blobList[i].color, "")
-                            ],
-                        );
-                    }
-                }
+        try {
+            localStorage.setItem("blobs", BoughtBlobsToString(selection));
+            navigate("/level" + localStorage.getItem("level"));
+        } catch (e) {
+            if (e instanceof ChildlessError) {
+                setErrorMessage("Ensure all yellow blobs have a child");
+            } else if (e instanceof NegativeValueError) {
+                setErrorMessage(
+                    "Ensure all yellow blobs have positive repetitions",
+                );
+            } else {
+                setErrorMessage("Unknown error");
             }
         }
     };
 
-    const blobString = () => {
-        // Just to create the classes
-        const env = new Environment(0, 0);
-        let orderedBlobs = [];
-        const count = {
-            red: 0,
-            blue: 0,
-            green: 0,
-            orange: 0,
-            purple: 0,
-            yellow: 0,
-        };
-        const blobs = {
-            red: [],
-            blue: [],
-            green: [],
-            orange: [],
-            purple: [],
-            yellow: [],
-        };
-        selection.forEach((blobList) =>
+    // Changes how many times a yellow blob is repeated
+    const adjustRepetitions = (blobID, newVal) => {
+        const adjustList = (blobList, blobID, newVal) => {
             blobList.forEach((blob) => {
-                let newBlob = null;
-                switch (blob.color) {
-                    case "red":
-                        newBlob = new RedBlob(count[blob.color], env);
-                        break;
-                    case "blue":
-                        newBlob = new BlueBlob(count[blob.color], env);
-                        break;
-                    case "green":
-                        newBlob = new GreenBlob(count[blob.color], env);
-                        break;
-                    case "orange":
-                        newBlob = new OrangeBlob(count[blob.color], env);
-                        break;
-                    case "purple":
-                        newBlob = new PurpleBlob(count[blob.color]);
-                        break;
-                    case "yellow":
-                        // TODO: Change from 10 to a number
-                        // also currently adding a yellow with no child causes an error
-                        newBlob = new YellowBlob(count[blob.color], 10);
-                        break;
-                    case "empty":
-                        break;
-                    default:
-                        throw new Error("Invalid color");
+                if (Array.isArray(blob)) {
+                    adjustList(blob);
+                } else {
+                    if (blob.id === blobID) {
+                        blob.repetitions = newVal;
+                    }
                 }
-                if (blob.color !== "empty") {
-                    orderedBlobs.push(newBlob);
-                    blobs[blob.color].push(newBlob);
-                    count[blob.color] += 1;
-                }
-            }),
-        );
-        selection.forEach((blobList) => createChildren(blobs, blobList));
-        console.log(orderedBlobs);
-        return JSON.stringify(orderedBlobs);
+            });
+        };
+        selection.forEach((blobList) => adjustList(blobList, blobID, newVal));
+        // Recalculates total cost
+        setBlobAdded(true)
     };
 
     return (
         <div className="container">
-            <div className="shop" ref={sell}>
-                {BlobList.map((blob) => {
-                    return (
-                        <BlobToBuy
-                            key={blob.id}
-                            id={blob.id}
-                            color={blob.color}
-                        />
-                    );
-                })}
-            </div>
-            <div className="Selection">
-                {selection.map((blobList) => {
-                    return (
-                        <ProgenitorBlob
-                            blob={blobList[0]}
-                            key={blobList[0].id}
-                            buy={(oldID, newBlob) =>
-                                addBlobToSelection(oldID, newBlob)
-                            }
-                            children={blobList.slice(1)}
-                        />
-                    );
-                })}
-            </div>
+            <BlobShop
+                sell={sell}
+                BlobsToBuy={BlobsToBuy}
+                reset={reset}
+                buy={(newBlob) =>
+                    addBlobToSelection(
+                        selection[selection.length - 1][0].id,
+                        newBlob,
+                    )
+                }
+                budget={props.budget}
+                totalCost={totalCost}
+            />
+            <Selection
+                selection={selection}
+                addBlobToSelection={addBlobToSelection}
+                adjustRepetitions={adjustRepetitions}
+            />
+            <h1>{errorMessage ? errorMessage : null}</h1>
             <div className="row mt-3">
                 <button
                     type="button"

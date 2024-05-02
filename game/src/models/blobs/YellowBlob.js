@@ -1,3 +1,4 @@
+import ChildlessError from "../../utils/ChildlessError";
 import Blob from "./Blob";
 import Status from "./Status";
 
@@ -31,8 +32,8 @@ class YellowBlob extends Blob {
     }
 
     addChild(child) {
-        this.#child.addParent(this);
         this.#child = child;
+        this.#child.addParent(this);
     }
 
     /* The yellow blob will wake up its 'child' child #repetitions times and
@@ -40,7 +41,7 @@ class YellowBlob extends Blob {
 
     act() {
         return {
-            color: "blue",
+            color: "yellow",
             number: this.#number,
             status: this.#resolveAction(),
             parent: this.#parent ? this.#parent.name() : null,
@@ -95,7 +96,14 @@ class YellowBlob extends Blob {
         return this.#name;
     }
 
+    parent() {
+        return this.#parent;
+    }
+
     toJSON() {
+        if (!this.#child) {
+            throw new ChildlessError();
+        }
         return {
             color: "yellow",
             number: this.#number.toString(),

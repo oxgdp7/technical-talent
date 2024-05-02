@@ -127,6 +127,10 @@ class PurpleBlob extends Blob {
         return this.#name;
     }
 
+    parent() {
+        return this.#parent;
+    }
+
     toJSON() {
         return {
             color: "purple",

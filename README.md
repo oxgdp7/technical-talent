@@ -26,9 +26,9 @@ To install all packages and then run:
 
 ## Adding new levels
 
-To add a new level, first create a new level files in game/src/pages and then
-fill out the level with the details you want. Use level1 as a template for this
-as it contains comments and explanations of certain things.
+To add a new level, first create a new level files in game/src/pages (copy and
+paste level1 and change the level argument) and then fill out game/src/levels
+with the details you want. Refer to the level1 comments for help.
 
 Then, to let this level be accessed, you will need to add it to game/src/app.js,
 copying level1 as before. To add a button that lets you select it, you will need
