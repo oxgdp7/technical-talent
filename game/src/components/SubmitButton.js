@@ -5,7 +5,7 @@ function SubmitButton(props) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 level: props.level,
-                google_id: 1,
+                google_id: localStorage.getItem("google_id"),
                 user_name: localStorage.getItem("name"),
                 user_email: localStorage.getItem("email"),
                 blobs: props.blobs,
@@ -20,7 +20,7 @@ function SubmitButton(props) {
                 className="btn btn-dark"
                 onClick={submitButtonPressed}
             >
-                submit
+                Submit
             </button>
         </div>
     );

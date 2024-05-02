@@ -93,8 +93,9 @@ function BlobDragDrop(props) {
                     } else {
                         if (blob.color === "purple") {
                             if (blobList.length !== 1) {
+                                // Blob list includes purple blob, empty blob
                                 cost += level["costs"][blob.color].cost(
-                                    blobList.length,
+                                    blobList.length - 2,
                                 );
                             }
                         } else if (blob.color === "yellow") {
@@ -145,6 +146,12 @@ function BlobDragDrop(props) {
                 }
             });
             newList.filter((blobList) => blobList.length > 0);
+            if (blobList[0].color === "yellow" && newList.length === 1) {
+                newList.push({
+                    id: "newEmpty",
+                    color: "empty",
+                });
+            }
             return newList;
         };
         const removeFromSelection = (selection) => {
@@ -215,7 +222,7 @@ function BlobDragDrop(props) {
         };
         selection.forEach((blobList) => adjustList(blobList, blobID, newVal));
         // Recalculates total cost
-        setBlobAdded(true)
+        setBlobAdded(true);
     };
 
     return (

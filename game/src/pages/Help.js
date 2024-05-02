@@ -30,6 +30,7 @@ function Help() {
         console.log(userDetails.name);
         localStorage.setItem("name", userDetails.name);
         localStorage.setItem("email", userDetails.email);
+        localStorage.setItem("google_id", userDetails.id)
       }, [userDetails])
 
     const redBlob = {
