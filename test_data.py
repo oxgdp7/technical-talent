@@ -46,17 +46,17 @@ def gen_date():
 
   return random_date
 
-
+num_users = 1000
 users = []
-for i in range(100):
+for i in range(num_users):
     users.append(User(google_id = "user_google_id_" + str(i), name=gen_str(10), email=gen_str(6)+"@gmail.com", last_played=gen_date(),
             has_been_emailed=random.choice([True,False]), total_score = random.randint(0, 300)))
 
 
 level_scores = []
-for i in range(100):
+for i in range(num_users):
    for j in range(1,4):
-    level_scores.append(LevelScore(user=users[i], level_id=j, score=random.randint(0, 100), timestamp=gen_date()))
+    level_scores.append(LevelScore(user=users[i], level_id=j, score=random.randint(0, 150), timestamp=gen_date()))
 
 
 def add_sample_data():

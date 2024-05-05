@@ -7,22 +7,41 @@
 
 {% block content %}  
 
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
     <!-- IGNORE syntax errors from js if they appear-->
     <br>
-    <div id="plot">
-    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <div id="plot1">
     <script>
         var plot_data = {{ hist_json | safe}};
-        Plotly.plot('plot', plot_data.data, plot_data.layout);
+        Plotly.plot('plot1', plot_data.data, plot_data.layout);
     </script>
     </div>
 
 
-    <hr>    
+    <hr>  
     <div id="plot2">
+        <script>
+            var plot_data = {{ hist_level1_json | safe}};
+            Plotly.plot('plot2', plot_data.data, plot_data.layout);
+        </script>
+    </div>
+
+    
+    <hr>  
+    <div id="plot3">        
+        <script>
+            var plot_data = {{ hist_level2_json | safe}};
+            Plotly.plot('plot3', plot_data.data, plot_data.layout);
+        </script>
+    </div>
+
+
+    <hr>    
+    <div id="plot4">
     <script>
         var plot_data = {{ pie_json | safe }};
-        Plotly.plot('plot2', plot_data.data, plot_data.layout);
+        Plotly.plot('plot4', plot_data.data, plot_data.layout);
     </script>
     </div>
 

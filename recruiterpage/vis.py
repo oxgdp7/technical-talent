@@ -4,7 +4,7 @@ from flask import (
 
 from recruiterpage.auth import login_required
 
-from model import db, User
+from model import db, User, LevelScore
 
 import plotly.graph_objs as go
 import pandas as pd
@@ -15,7 +15,7 @@ bp = Blueprint("vis", __name__)
 @login_required 
 def visual():
 
-    # Histogram
+    # Histogram for total scores
     total_scores = User.query.with_entities(User.total_score).all()
     total_scores = [score[0] for score in total_scores]
 
@@ -26,6 +26,32 @@ def visual():
     fig = go.Figure(data=data, layout=layout)
 
     hist_json = fig.to_json()
+
+    
+    # Histogram for scores in level 1
+    scores = LevelScore.query.filter_by(level_id=1).with_entities(LevelScore.score).all()
+    scores = [score[0] for score in scores]
+
+    df = pd.DataFrame(scores, columns=['Score'])
+
+    data = [go.Histogram(x=df['Score'], marker=dict(color='skyblue'), nbinsx=50)]  
+    layout = go.Layout(title='Distribution of Scores for Level 1', xaxis=dict(title='Score'), yaxis=dict(title='Frequency'))
+    fig = go.Figure(data=data, layout=layout)
+
+    hist_level1_json = fig.to_json()
+
+
+    # Histogram for scores in level 2
+    scores = LevelScore.query.filter_by(level_id=2).with_entities(LevelScore.score).all()
+    scores = [score[0] for score in scores]
+
+    df = pd.DataFrame(scores, columns=['Score'])
+
+    data = [go.Histogram(x=df['Score'], marker=dict(color='skyblue'), nbinsx=50)]  
+    layout = go.Layout(title='Distribution of Scores for Level 2', xaxis=dict(title='Score'), yaxis=dict(title='Frequency'))
+    fig = go.Figure(data=data, layout=layout)
+
+    hist_level2_json = fig.to_json()
 
 
     # Pie Chart
@@ -43,4 +69,5 @@ def visual():
     pie_json = fig.to_json()
 
 
-    return render_template("visual/visualisations.html", hist_json=hist_json, pie_json=pie_json)
+    return render_template("visual/visualisations.html", hist_json=hist_json, 
+                           hist_level1_json=hist_level1_json, hist_level2_json=hist_level2_json, pie_json=pie_json)
