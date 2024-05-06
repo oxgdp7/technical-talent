@@ -10,6 +10,7 @@ from flask import (
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from sqlalchemy import event
+from sqlalchemy.orm.exc import NoResultFound
 from datetime import datetime, timezone
 import os
 from dotenv import load_dotenv
@@ -31,6 +32,7 @@ app.config.update(
 db.init_app(app)
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 
 # maintain total_score invariant
 def update_user_total_score(mapper, connection, target):
@@ -108,6 +110,30 @@ def create_or_update_user(google_id, user_email, user_name, user_score):
     return user
 
 
+def update_user_score(user_id, level_id, score):
+    # pre: the user exists
+    user = User.query.get(user_id)
+    if not user:
+        raise ValueError("User does not exist")
+
+    # attempt to find an existing level score for this user
+    try:
+        level_score = LevelScore.query.filter_by(
+            user_id=user_id, level_id=level_id
+        ).one()
+    except NoResultFound:
+        # create a new record
+        level_score = LevelScore(user_id=user_id, level_id=level_id, score=score)
+        db.session.add(level_score)
+    else:
+        # update if exists and new score is higher
+        if level_score.score < score:
+            level_score.score = score
+
+    db.session.commit()
+    return level_score
+
+
 @app.after_request
 def set_security_headers(response):
     response.headers["Content-Security-Policy"] = (
@@ -160,9 +186,14 @@ def logout():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    score = levelSelector(request.json["level"], request.json["blobs"])
+    request_json = request.json
+    score = levelSelector(request_json["level"], request_json["blobs"])
     # should not just update total score
-    user = create_or_update_user(request.json["google_id"], request.json["user_email"], request.json["user_name"], score)
+    user = update_user_score(
+        request_json["google_id"],
+        request_json["level"],
+        score,
+    )
     return {"completed": True}
 
 
@@ -186,9 +217,11 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-        default_user = Recruiter(username = "username", 
-            password = "scrypt:32768:8:1$OjTG32paY7lO2En1$3395ccb114c3df243a57aacdf169572c427e2310a76e6b2fed5bc41b854586344361aad24e20a8655cfe930aeb9172370b79fb0ab058691537177564df8fe743")
-        
+        default_user = Recruiter(
+            username="username",
+            password="scrypt:32768:8:1$OjTG32paY7lO2En1$3395ccb114c3df243a57aacdf169572c427e2310a76e6b2fed5bc41b854586344361aad24e20a8655cfe930aeb9172370b79fb0ab058691537177564df8fe743",
+        )
+
         db.session.add(default_user)
         db.session.commit()
 

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from collections.abc import Callable
 from enum import Enum
-from typing import Optional
+from typing import Optional, Tuple, List, Callable
 
 
 class Environment:
@@ -60,7 +59,7 @@ class Environment:
         self.__treesToPlant = 0
         self.__waterLeft = self.__water
 
-    def resources(self) -> tuple[int, int]:
+    def resources(self) -> Tuple[int, int]:
         """Returns (#collected wood, #collected water"""
         return (self.__collectedWood, self.__collectedWater)
 
@@ -267,7 +266,7 @@ class OrangeBlob(Blob):
 # wakes it up (in the original order to break ties). Once all of its children
 # have been woken up once, it goes to sleep
 class PurpleBlob(Blob):
-    def __init__(self, costFunc: Callable[[int], int], blobs: list[Blob]) -> None:
+    def __init__(self, costFunc: Callable[[int], int], blobs: List[Blob]) -> None:
         self.__blobs = blobs
         self.__numBlobs = len(self.__blobs)
         self.__blobRestarted = [False] * self.__numBlobs
@@ -277,7 +276,7 @@ class PurpleBlob(Blob):
         self.__status = BlobStatus.ACTIVE
         self.__activated = False
 
-    def addBlobs(self, blobs: list[Blob]) -> None:
+    def addBlobs(self, blobs: List[Blob]) -> None:
         self.__blobs = self.__blobs + blobs
         self.__numBlobs = len(self.__blobs)
         self.__blobRestarted = [False] * self.__numBlobs
@@ -390,7 +389,7 @@ class YellowBlob(Blob):
 class Simulation:
     def __init__(
         self,
-        blobs: list[Blob],
+        blobs: List[Blob],
         woodToCollect: int,
         waterToCollect: int,
         trees: int,
@@ -431,10 +430,10 @@ class Simulation:
         resources = self.__env.resources()
         return resources[0] >= self.__target[0] and resources[1] >= self.__target[1]
 
-    def result(self) -> tuple[bool, int]:
+    def result(self) -> Tuple[bool, int]:
         return (self.__checkSolution(), self.__getCost())
 
-    def resources(self) -> tuple[int, int]:
+    def resources(self) -> Tuple[int, int]:
         return self.__env.resources()
 
 

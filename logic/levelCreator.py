@@ -1,4 +1,5 @@
 from logic.blob import *
+from typing import List, Tuple
 
 
 def calculateScore(
@@ -24,7 +25,7 @@ def calculateScore(
     return budget - res[1]
 
 
-def createBlobs(blobDetails: list, costs: dict) -> list[Blob]:
+def createBlobs(blobDetails: list, costs: dict) -> List[Blob]:
     # Mapping from blob name to a class for that blob
     blobs = {}
     # Create the blobs
@@ -43,7 +44,7 @@ def createBlobs(blobDetails: list, costs: dict) -> list[Blob]:
     return list(blobs.values())
 
 
-def createBlob(blob: dict, costs: dict) -> tuple[str, Blob]:
+def createBlob(blob: dict, costs: dict) -> Tuple[str, Blob]:
     if blob["color"] == "red":
         return ("red" + blob["number"], RedBlob(costs["red"]))
     if blob["color"] == "blue":
