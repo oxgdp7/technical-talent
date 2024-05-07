@@ -406,7 +406,6 @@ class Simulation:
         noneActed = False
         finished = False
         while not finished:
-            print(self.__env.resources())
             prevNoneActed = noneActed
             noneActed = True
             for blob in self.__blobs:
