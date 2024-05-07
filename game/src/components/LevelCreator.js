@@ -8,6 +8,9 @@ import SubmitButton from "./SubmitButton";
 
 function LevelCreator(props) {
     const [blobs, setBlobs] = useState([]);
+    const [nickname, setNickname] = useState(
+        localStorage.getItem("nickname") || "",
+    );
 
     const level = Levels(props.level);
     const env = level.env;
@@ -48,6 +51,19 @@ function LevelCreator(props) {
                 >
                     Animation
                 </button>
+            </div>
+            <div className="row">
+                <label htmlFor="nickname-field">Nickname:</label>
+                <input
+                    id="nickname-field"
+                    type="string"
+                    className="form-control"
+                    value={nickname}
+                    onChange={(e) => {
+                        setNickname(e.target.value);
+                        localStorage.setItem("nickname", e.target.value);
+                    }}
+                />
             </div>
             <SubmitButton level={props.level} blobs={blobs} />
         </div>

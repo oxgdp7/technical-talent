@@ -18,7 +18,12 @@ def calculateScore(
         waterToCollect=waterToCollect,
         trees=trees,
         rateOfWater=rateOfWater,
+        endEarly=False,
     )
+    print(simulation.resources())
+    print("Wood collected:", simulation.resources()[0])
+    print("Water collected:", simulation.resources()[1])
+    print("Spent:", simulation.result()[1])
     res = simulation.result()
     if not res[0]:
         return 0
