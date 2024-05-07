@@ -48,11 +48,11 @@ function Levels(level) {
                     "3 * number of blobs repeated",
                 ),
                 yellow: new BlobCostCreator(
-                    (x) => 2 * x,
-                    "2 * number of repetitions",
+                    (x) => 20 * x,
+                    "20 * number of repetitions",
                 ),
             },
-            budget: 1010,
+            budget: 300,
         },
     };
 
