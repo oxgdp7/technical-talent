@@ -1,3 +1,4 @@
+import argparse
 from authlib.integrations.flask_client import OAuth
 from flask import (
     Flask,
@@ -35,18 +36,12 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 
 # maintain total_score invariant
-def update_user_total_score(mapper, connection, target):
+def update_user_total_score(google_id):
     # updates the total_score of a User whenever a LevelScore is inserted or updated.
-    user_id = target.user_id
-    user = User.query.get(user_id)
+    user = get_user(google_id)
     if user:
         user.total_score = sum([ls.score for ls in user.scores])
         db.session.commit()
-
-
-event.listen(LevelScore, "after_insert", update_user_total_score)
-event.listen(LevelScore, "after_update", update_user_total_score)
-event.listen(LevelScore, "after_delete", update_user_total_score)
 
 
 # OAuth 2 client setup
@@ -90,7 +85,7 @@ def get_users_by_level_score(level, lower_bound=None, upper_bound=None):
     return query.all()
 
 
-def create_or_update_user(google_id, user_email, user_name, user_score):
+def create_or_update_user(google_id, user_email, user_name):
     if user_name is None:
         user_name = ""
     user = get_user(google_id)
@@ -100,7 +95,6 @@ def create_or_update_user(google_id, user_email, user_name, user_score):
             email=user_email,
             name=user_name,
             last_played=datetime.now(timezone.utc),
-            total_score=user_score,
         )
         db.session.add(user)
     else:
@@ -110,12 +104,13 @@ def create_or_update_user(google_id, user_email, user_name, user_score):
     return user
 
 
-def update_user_score(user_id, level_id, score):
+def update_user_score(google_id, level_id, score):
     # pre: the user exists
-    user = User.query.get(user_id)
+    user = get_user(google_id)
     if not user:
         raise ValueError("User does not exist")
 
+    user_id = user.id
     # attempt to find an existing level score for this user
     try:
         level_score = LevelScore.query.filter_by(
@@ -130,6 +125,7 @@ def update_user_score(user_id, level_id, score):
         if level_score.score < score:
             level_score.score = score
 
+    update_user_total_score(google_id=google_id)
     db.session.commit()
     return level_score
 
@@ -188,7 +184,9 @@ def logout():
 def submit():
     request_json = request.json
     score = levelSelector(request_json["level"], request_json["blobs"])
-    # should not just update total score
+    user = create_or_update_user(request_json["google_id"],
+                                 request_json["user_email"],
+                                 request_json["user_name"])
     user = update_user_score(
         request_json["google_id"],
         request_json["level"],
@@ -214,15 +212,19 @@ def internal(e):
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start", help="Starts the server", action="store_true")
+    args = parser.parse_args()
+    if args.start:
+        with app.app_context():
+            db.create_all()
 
-        default_user = Recruiter(
-            username="username",
-            password="scrypt:32768:8:1$OjTG32paY7lO2En1$3395ccb114c3df243a57aacdf169572c427e2310a76e6b2fed5bc41b854586344361aad24e20a8655cfe930aeb9172370b79fb0ab058691537177564df8fe743",
-        )
+            default_user = Recruiter(
+                username="username",
+                password="scrypt:32768:8:1$OjTG32paY7lO2En1$3395ccb114c3df243a57aacdf169572c427e2310a76e6b2fed5bc41b854586344361aad24e20a8655cfe930aeb9172370b79fb0ab058691537177564df8fe743",
+            )
 
-        db.session.add(default_user)
-        db.session.commit()
+            db.session.add(default_user)
+            db.session.commit()
 
     app.run(host="0.0.0.0", port=5000, ssl_context="adhoc")

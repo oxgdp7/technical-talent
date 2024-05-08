@@ -22,14 +22,14 @@ levels = {
             "blue": 10,
             "green": 2,
             "orange": 10,
-            "purple": lambda x: 3 * x,
-            "yellow": lambda y: 2 * y,
+            "purple": lambda x: 30 * x * x,
+            "yellow": lambda y: 20 * y,
         },
         "woodToCollect": 80,
         "waterToCollect": 20,
         "trees": 5,
         "rateOfWater": 10,
-        "budget": 1010,
+        "budget": 500,
     },
 }
 

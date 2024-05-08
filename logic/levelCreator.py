@@ -18,6 +18,7 @@ def calculateScore(
         waterToCollect=waterToCollect,
         trees=trees,
         rateOfWater=rateOfWater,
+        endEarly=False,
     )
     res = simulation.result()
     if not res[0]:

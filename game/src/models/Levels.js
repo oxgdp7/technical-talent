@@ -44,15 +44,15 @@ function Levels(level) {
                 green: new BlobCostCreator((_) => 2, "2"),
                 orange: new BlobCostCreator((_) => 5, "10"),
                 purple: new BlobCostCreator(
-                    (x) => 3 * x,
-                    "3 * number of blobs repeated",
+                    (x) => 3 * x * x,
+                    "30 * (number of blobs repeated)^2",
                 ),
                 yellow: new BlobCostCreator(
-                    (x) => 2 * x,
-                    "2 * number of repetitions",
+                    (x) => 20 * x,
+                    "20 * number of repetitions",
                 ),
             },
-            budget: 1010,
+            budget: 500,
         },
     };
 

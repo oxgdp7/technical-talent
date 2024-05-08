@@ -212,7 +212,7 @@ function BlobDragDrop(props) {
         const adjustList = (blobList, blobID, newVal) => {
             blobList.forEach((blob) => {
                 if (Array.isArray(blob)) {
-                    adjustList(blob);
+                    adjustList(blob, blobID, newVal);
                 } else {
                     if (blob.id === blobID) {
                         blob.repetitions = newVal;
