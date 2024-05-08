@@ -184,7 +184,6 @@ def logout():
 def submit():
     request_json = request.json
     score = levelSelector(request_json["level"], request_json["blobs"])
-    print("Score:", score)
     user = create_or_update_user(request_json["google_id"],
                                  request_json["user_email"],
                                  request_json["user_name"])

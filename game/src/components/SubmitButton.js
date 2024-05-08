@@ -5,13 +5,9 @@ function SubmitButton(props) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 level: props.level,
-                google_id: localStorage.getItem("nickname"),
-                user_name: localStorage.getItem("nickname"),
-                user_email:
-                    localStorage.getItem("nickname") +
-                    "@" +
-                    localStorage.getItem("nickname") +
-                    "mail.com",
+                google_id: localStorage.getItem("google_id"),
+                user_name: localStorage.getItem("name"),
+                user_email: localStorage.getItem("email"),
                 blobs: props.blobs,
             }),
         });
