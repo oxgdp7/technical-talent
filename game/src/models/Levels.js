@@ -52,7 +52,7 @@ function Levels(level) {
                     "20 * number of repetitions",
                 ),
             },
-            budget: 300,
+            budget: 500,
         },
     };
 

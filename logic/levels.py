@@ -29,7 +29,7 @@ levels = {
         "waterToCollect": 20,
         "trees": 5,
         "rateOfWater": 10,
-        "budget": 300,
+        "budget": 500,
     },
 }
 
