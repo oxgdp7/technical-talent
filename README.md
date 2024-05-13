@@ -22,6 +22,9 @@ There is also a screen to display visualisations of this:
 ## Recruiter Page
 
 To run the recruiters page, first run:
+### `python app.py --start`
+
+(To restart the server, run:)
 ### `python app.py`
 
 Which initalises all the databases. Then, run:
